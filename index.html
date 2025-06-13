@@ -1,0 +1,3641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>秦汉新城应急物资库管理系统</title>
+    <style>
+        /* 苹果风格设计系统 */
+        :root {
+            --primary-color: #007AFF;
+            --secondary-color: #5856D6;
+            --success-color: #34C759;
+            --warning-color: #FF9500;
+            --error-color: #FF3B30;
+            --background-color: #F2F2F7;
+            --card-background: #FFFFFF;
+            --text-primary: #000000;
+            --text-secondary: #8E8E93;
+            --border-color: #C6C6C8;
+            --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --border-radius: 12px;
+            --border-radius-small: 8px;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-md);
+        }
+        
+        /* 头部样式 */
+        header {
+            background: var(--card-background);
+            padding: var(--spacing-lg) var(--spacing-md);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        /* 标签页样式 */
+        .tabs {
+            display: flex;
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-xs);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .tab {
+            flex: 1;
+            min-width: 120px;
+            padding: var(--spacing-md) var(--spacing-sm);
+            text-align: center;
+            cursor: pointer;
+            border-radius: var(--border-radius-small);
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        
+        .tab:hover {
+            background-color: rgba(0, 122, 255, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .tab.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-light);
+        }
+        
+        /* 内容区域 */
+        .tab-content {
+            display: none;
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: var(--spacing-lg) 0 var(--spacing-md) 0;
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        input[type="file"],
+        select,
+        textarea {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-small);
+            font-size: 16px;
+            background-color: var(--card-background);
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        /* 按钮样式 */
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: none;
+            border-radius: var(--border-radius-small);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            min-height: 44px;
+        }
+        
+        button:hover {
+            background-color: #0056CC;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background-color: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background-color: var(--text-secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #6D6D70;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #28A745;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+        }
+        
+        .btn-warning:hover {
+            background-color: #E8890B;
+        }
+        
+        .btn-danger {
+            background-color: var(--error-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #D70015;
+        }
+        
+        .btn-small {
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: 14px;
+            min-height: 36px;
+        }
+        
+        .btn-delete {
+            background-color: var(--error-color);
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: 14px;
+            min-height: 36px;
+        }
+        
+        .btn-delete:hover {
+            background-color: #D70015;
+        }
+        
+        /* 表单行布局 */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        /* 表格样式 */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: var(--border-radius-small);
+            box-shadow: var(--shadow-light);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-background);
+            font-size: 14px;
+        }
+        
+        th, td {
+            padding: var(--spacing-md);
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--background-color);
+            font-weight: 600;
+            color: var(--text-primary);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        tr:hover {
+            background-color: rgba(0, 122, 255, 0.05);
+        }
+        
+        /* 搜索框样式 */
+        .search-box {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .search-box input {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        /* 统计信息样式 */
+        .summary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            margin-top: var(--spacing-lg);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .summary p {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0;
+        }
+        
+        /* 数据管理区域 */
+        .data-management {
+            background: linear-gradient(135deg, #F0F9FF, #E0F2FE);
+            border: 1px solid #BAE6FD;
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .data-management h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        
+        .data-management button {
+            margin-right: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .import-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .import-container input[type="file"] {
+            margin-right: var(--spacing-sm);
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-content {
+            position: relative;
+            background-color: var(--card-background);
+            margin: 5% auto;
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .close-modal {
+            position: absolute;
+            right: var(--spacing-md);
+            top: var(--spacing-md);
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        
+        .close-modal:hover {
+            background-color: var(--background-color);
+            color: var(--text-primary);
+        }
+        
+        /* 备份提醒样式 */
+        .backup-reminder {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: var(--spacing-md);
+            background: linear-gradient(135deg, var(--warning-color), #FF8C00);
+            color: white;
+            z-index: 2000;
+            text-align: center;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .backup-reminder button {
+            margin: 0 var(--spacing-sm);
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .backup-reminder button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* 错误样式 */
+        .error-message {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: var(--spacing-xs);
+            display: none;
+        }
+        
+        input.error, select.error, textarea.error {
+            border-color: var(--error-color);
+            background-color: rgba(255, 59, 48, 0.05);
+        }
+        
+        .data-integrity-warning {
+            background-color: rgba(255, 149, 0, 0.1);
+            color: var(--warning-color);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border: 1px solid rgba(255, 149, 0, 0.3);
+            border-radius: var(--border-radius-small);
+        }
+        
+        /* 子标签页样式 */
+        .sub-tabs {
+            display: flex;
+            margin-bottom: var(--spacing-lg);
+            background: var(--background-color);
+            border-radius: var(--border-radius-small);
+            padding: var(--spacing-xs);
+        }
+        
+        .sub-tab {
+            flex: 1;
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-align: center;
+            cursor: pointer;
+            border-radius: var(--border-radius-small);
+            font-weight: 500;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+        }
+        
+        .sub-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .sub-tab-content {
+            display: none;
+        }
+        
+        .sub-tab-content.active {
+            display: block;
+        }
+        
+        /* 备份列表样式 */
+        .backup-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .backup-list li {
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            background-color: var(--background-color);
+            border-radius: var(--border-radius-small);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        
+        .backup-list li:hover {
+            background-color: rgba(0, 122, 255, 0.05);
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--spacing-sm);
+            }
+            
+            header {
+                padding: var(--spacing-md);
+            }
+            
+            header h1 {
+                font-size: 24px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+                gap: var(--spacing-xs);
+            }
+            
+            .tab {
+                min-width: auto;
+                padding: var(--spacing-md);
+            }
+            
+            .tab-content {
+                padding: var(--spacing-md);
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-sm);
+            }
+            
+            .search-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box input {
+                min-width: auto;
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+                padding: var(--spacing-lg);
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: var(--spacing-sm);
+            }
+            
+            button {
+                width: 100%;
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .search-box button {
+                width: auto;
+                flex: 1;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tabs {
+                padding: var(--spacing-xs);
+            }
+            
+            .tab {
+                font-size: 12px;
+                padding: var(--spacing-sm);
+            }
+            
+            h2 {
+                font-size: 20px;
+            }
+            
+            h3 {
+                font-size: 18px;
+            }
+            
+            .summary {
+                padding: var(--spacing-md);
+            }
+            
+            .summary p {
+                font-size: 16px;
+            }
+        }
+        
+        /* 打印样式 */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            body {
+                background: white;
+                color: black;
+            }
+            
+            .container {
+                max-width: none;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .tab-content {
+                display: block !important;
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .tabs {
+                display: none;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 8px 4px;
+            }
+        }
+        
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 状态指示器 */
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: var(--spacing-xs);
+        }
+        
+        .status-indicator.success {
+            background-color: var(--success-color);
+        }
+        
+        .status-indicator.warning {
+            background-color: var(--warning-color);
+        }
+        
+        .status-indicator.error {
+            background-color: var(--error-color);
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        /* 输入组样式 */
+        .input-group {
+            display: flex;
+            align-items: stretch;
+        }
+        
+        .input-group input {
+            border-radius: var(--border-radius-small) 0 0 var(--border-radius-small);
+            border-right: none;
+        }
+        
+        .input-group button {
+            border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
+            min-width: auto;
+            padding: 0 var(--spacing-md);
+        }
+    </style>
+</head>
+<body>
+    <!-- 备份提醒 -->
+    <div class="backup-reminder" id="backup-reminder" style="display:none;">
+        <p><strong>数据安全提醒:</strong> 您已超过<span id="days-count">7</span>天未创建备份，为防止数据丢失，建议立即备份</p>
+        <button id="create-export-now">立即备份</button>
+        <button id="remind-later">稍后提醒</button>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>秦汉新城应急物资库管理系统</h1>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="register">物资入库</div>
+            <div class="tab" data-tab="inventory">库存台账</div>
+            <div class="tab" data-tab="outbound">物资出库</div>
+            <div class="tab" data-tab="return">物资借还</div>
+            <div class="tab" data-tab="statistics">统计分析</div>
+            <div class="tab" data-tab="datamgmt">数据管理</div>
+        </div>
+        
+        <!-- 物资入库 -->
+        <div class="tab-content active" id="register">
+            <h2>物资入库登记</h2>
+            <form id="register-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="item-name">物资名称</label>
+                        <input type="text" id="item-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-category">物资类别</label>
+                        <select id="item-category" required>
+                            <option value="">--请选择--</option>
+                            <option value="防汛物资">防汛物资</option>
+                            <option value="消防物资">消防物资</option>
+                            <option value="医疗物资">医疗物资</option>
+                            <option value="救援物资">救援物资</option>
+                            <option value="通信物资">通信物资</option>
+                            <option value="其他物资">其他物资</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="item-quantity">数量</label>
+                        <input type="number" id="item-quantity" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-unit">单位</label>
+                        <input type="text" id="item-unit" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="item-spec">规格型号</label>
+                        <input type="text" id="item-spec" placeholder="可选">
+                    </div>
+                    <div class="form-group">
+                        <label for="item-price">单价</label>
+                        <input type="number" id="item-price" min="0" step="0.01">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="item-date">入库日期</label>
+                        <input type="date" id="item-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-operator">经办人</label>
+                        <input type="text" id="item-operator" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="width: 100%;">
+                        <label for="item-source">来源</label>
+                        <input type="text" id="item-source" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="width: 100%;">
+                        <label for="item-usage">使用方法</label>
+                        <textarea id="item-usage" rows="3" placeholder="请输入物资的使用方法和注意事项"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="width: 100%;">
+                        <label for="item-notes">备注</label>
+                        <textarea id="item-notes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="submit" style="min-width: 120px; padding: 10px 20px;">提交登记</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- 库存台账 -->
+        <div class="tab-content" id="inventory">
+            <h2>物资库存台账</h2>
+            <div class="search-box">
+                <input type="text" id="inventory-search" placeholder="搜索物资名称、类别或来源">
+                <button id="btn-search">搜索</button>
+                <button id="btn-reset">重置</button>
+                <button id="btn-print" class="no-print">打印台账</button>
+            </div>
+            <table id="inventory-table">
+                <thead>
+                    <tr>
+                        <th>物资名称</th>
+                        <th>类别</th>
+                        <th>库存数量</th>
+                        <th>单位</th>
+                        <th>规格型号</th>
+                        <th>单价</th>
+                        <th>总价值</th>
+                        <th>来源</th>
+                        <th>入库日期</th>
+                        <th>使用方法</th>
+                        <th>备注</th>
+                        <th class="no-print">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 数据会通过JavaScript动态添加 -->
+                </tbody>
+            </table>
+            <div class="summary">
+                <p>总计: <span id="total-quantity">0</span> 件物资，总价值: <span id="total-value">0.00</span> 元</p>
+            </div>
+        </div>
+        
+        <!-- 物资出库 -->
+        <div class="tab-content" id="outbound">
+            <h2>物资出库登记</h2>
+            <form id="outbound-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="outbound-name">物资名称</label>
+                        <select id="outbound-name" required>
+                            <option value="">--请选择--</option>
+                            <!-- 选项会通过JavaScript动态添加 -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="outbound-quantity">出库数量</label>
+                        <input type="number" id="outbound-quantity" min="1" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="outbound-date">出库日期</label>
+                        <input type="date" id="outbound-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="outbound-recipient">领用人/单位</label>
+                        <input type="text" id="outbound-recipient" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="outbound-purpose">用途</label>
+                        <input type="text" id="outbound-purpose" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="outbound-operator">经办人</label>
+                        <input type="text" id="outbound-operator" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="outbound-notes">备注</label>
+                    <textarea id="outbound-notes" rows="3"></textarea>
+                </div>
+                <button type="submit">提交出库</button>
+            </form>
+            
+            <h3 style="margin-top: 30px;">出库记录</h3>
+            <table id="outbound-table">
+                <thead>
+                    <tr>
+                        <th>物资名称</th>
+                        <th>出库数量</th>
+                        <th>单位</th>
+                        <th>领用人/单位</th>
+                        <th>用途</th>
+                        <th>出库日期</th>
+                        <th>经办人</th>
+                        <th class="no-print">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 数据会通过JavaScript动态添加 -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 物资借还 -->
+        <div class="tab-content" id="return">
+            <h2>物资借还管理</h2>
+            
+            <!-- 内部子选项卡 -->
+            <div class="sub-tabs" style="margin-bottom: 20px; border-bottom: 1px solid #ddd; display: flex;">
+                <div class="sub-tab active" data-subtab="borrow" style="padding: 10px 20px; cursor: pointer; background-color: #4CAF50; color: white; margin-right: 5px; border-radius: 5px 5px 0 0;">物资借出</div>
+                <div class="sub-tab" data-subtab="return" style="padding: 10px 20px; cursor: pointer; background-color: #eee; margin-right: 5px; border-radius: 5px 5px 0 0;">物资归还</div>
+            </div>
+            
+            <!-- 物资借出子页面 -->
+            <div class="sub-tab-content active" id="borrow-content">
+                <h3>物资借出登记</h3>
+                <form id="borrow-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="borrow-name">物资名称</label>
+                            <select id="borrow-name" required>
+                                <option value="">--请选择--</option>
+                                <!-- 选项会通过JavaScript动态添加 -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="borrow-quantity">借出数量</label>
+                            <input type="number" id="borrow-quantity" min="1" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="borrow-date">借出日期</label>
+                            <input type="date" id="borrow-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="borrow-expected-return">预计归还日期</label>
+                            <input type="date" id="borrow-expected-return">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="borrow-person">借用人/单位</label>
+                            <input type="text" id="borrow-person" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="borrow-purpose">用途</label>
+                            <input type="text" id="borrow-purpose" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="borrow-operator">经办人</label>
+                            <input type="text" id="borrow-operator" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="borrow-contact">联系方式</label>
+                            <input type="text" id="borrow-contact">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="borrow-notes">备注</label>
+                        <textarea id="borrow-notes" rows="3"></textarea>
+                    </div>
+                    <button type="submit">提交借出</button>
+                </form>
+                
+                <h3 style="margin-top: 30px;">借出记录</h3>
+                <table id="borrow-table">
+                    <thead>
+                        <tr>
+                            <th>物资名称</th>
+                            <th>借出数量</th>
+                            <th>单位</th>
+                            <th>借用人/单位</th>
+                            <th>借出日期</th>
+                            <th>预计归还日期</th>
+                            <th>已归还数量</th>
+                            <th>状态</th>
+                            <th class="no-print">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 数据会通过JavaScript动态添加 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 物资归还子页面 -->
+            <div class="sub-tab-content" id="return-content" style="display: none;">
+                <h3>物资归还登记</h3>
+                <form id="return-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="return-record">选择借出记录</label>
+                            <select id="return-record" required>
+                                <option value="">--请选择--</option>
+                                <!-- 选项会通过JavaScript动态添加 -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="return-quantity">归还数量</label>
+                            <input type="number" id="return-quantity" min="1" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="return-date">归还日期</label>
+                            <input type="date" id="return-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="return-condition">物资状态</label>
+                            <select id="return-condition" required>
+                                <option value="">--请选择--</option>
+                                <option value="完好">完好</option>
+                                <option value="轻微损坏">轻微损坏</option>
+                                <option value="需要维修">需要维修</option>
+                                <option value="不可用">不可用</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="return-person">归还人</label>
+                            <input type="text" id="return-person" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="return-operator">经办人</label>
+                            <input type="text" id="return-operator" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="return-notes">备注</label>
+                        <textarea id="return-notes" rows="3" placeholder="归还物资的使用情况、损耗说明等"></textarea>
+                    </div>
+                    <button type="submit">提交归还</button>
+                </form>
+                
+                <h3 style="margin-top: 30px;">归还记录</h3>
+                <table id="return-table">
+                    <thead>
+                        <tr>
+                            <th>物资名称</th>
+                            <th>归还数量</th>
+                            <th>单位</th>
+                            <th>物资状态</th>
+                            <th>归还人</th>
+                            <th>归还日期</th>
+                            <th>经办人</th>
+                            <th class="no-print">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 数据会通过JavaScript动态添加 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 统计分析 -->
+        <div class="tab-content" id="statistics">
+            <h2>物资统计分析</h2>
+            <div>
+                <h3>按类别统计</h3>
+                <table id="category-stats">
+                    <thead>
+                        <tr>
+                            <th>物资类别</th>
+                            <th>物资种类数</th>
+                            <th>总数量</th>
+                            <th>总价值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 数据会通过JavaScript动态添加 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <h3>出入库统计</h3>
+                <table id="in-out-stats">
+                    <thead>
+                        <tr>
+                            <th>物资名称</th>
+                            <th>入库总量</th>
+                            <th>出库总量</th>
+                            <th>当前库存</th>
+                            <th>库存价值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 数据会通过JavaScript动态添加 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 数据管理 -->
+        <div class="tab-content" id="datamgmt">
+            <h2>数据管理</h2>
+            <div class="data-management">
+                <h3>数据备份与恢复</h3>
+                <button id="export-data">导出数据备份</button>
+                
+                <div class="import-container">
+                    <input type="file" id="import-data" accept=".json">
+                    <button id="import-button">导入数据</button>
+                </div>
+                
+                <h3 style="margin-top: 20px;">自动备份</h3>
+                <button id="create-backup">创建手动备份</button>
+                <button id="restore-backup">恢复备份</button>
+                
+                <div id="backups-container">
+                    <h4>最近备份记录</h4>
+                    <ul class="backup-list" id="backup-list">
+                        <!-- 备份列表将通过JavaScript动态添加 -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 备份恢复模态框 -->
+    <div id="backup-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>选择要恢复的备份</h3>
+            <ul id="modal-backup-list" class="backup-list">
+                <!-- 备份列表将通过JavaScript动态添加 -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- 编辑物资模态框 -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+            <span class="close-modal">&times;</span>
+            <h3>编辑物资信息</h3>
+            <div style="position: absolute; top: 15px; right: 50px;">
+                <button id="edit-save-btn" form="edit-form" type="submit" style="background-color: #4CAF50; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer;">保存</button>
+            </div>
+            <form id="edit-form">
+                <input type="hidden" id="edit-item-id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-item-name">物资名称</label>
+                        <input type="text" id="edit-item-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-item-category">物资类别</label>
+                        <select id="edit-item-category" required>
+                            <option value="">--请选择--</option>
+                            <option value="防汛物资">防汛物资</option>
+                            <option value="消防物资">消防物资</option>
+                            <option value="医疗物资">医疗物资</option>
+                            <option value="救援物资">救援物资</option>
+                            <option value="通信物资">通信物资</option>
+                            <option value="其他物资">其他物资</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-item-quantity">数量</label>
+                        <input type="number" id="edit-item-quantity" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-item-unit">单位</label>
+                        <input type="text" id="edit-item-unit" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-item-spec">规格型号</label>
+                        <input type="text" id="edit-item-spec" placeholder="可选">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-item-price">单价</label>
+                        <input type="number" id="edit-item-price" min="0" step="0.01">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-item-source">来源</label>
+                        <input type="text" id="edit-item-source" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-item-date">入库日期</label>
+                        <input type="date" id="edit-item-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-item-operator">经办人</label>
+                        <input type="text" id="edit-item-operator" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-item-usage">使用方法</label>
+                    <textarea id="edit-item-usage" rows="3" placeholder="请输入物资的使用方法和注意事项"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-item-notes">备注</label>
+                    <textarea id="edit-item-notes" rows="3"></textarea>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // IndexedDB数据库管理器
+        class DBManager {
+            constructor() {
+                this.dbName = "EmergencySuppliesDB";
+                this.dbVersion = 1;
+                this.db = null;
+                this.isReady = false;
+                this.readyCallbacks = [];
+                this.init();
+            }
+
+            // 初始化数据库连接
+            init() {
+                const request = indexedDB.open(this.dbName, this.dbVersion);
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    
+                    // 创建数据存储对象
+                    if (!db.objectStoreNames.contains('emergencyItems')) {
+                        db.createObjectStore('emergencyItems', { keyPath: 'id' });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('outboundRecords')) {
+                        db.createObjectStore('outboundRecords', { keyPath: 'id' });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('borrowRecords')) {
+                        db.createObjectStore('borrowRecords', { keyPath: 'id' });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('returnRecords')) {
+                        db.createObjectStore('returnRecords', { keyPath: 'id' });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('dataBackups')) {
+                        db.createObjectStore('dataBackups', { keyPath: 'timestamp' });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('operationLogs')) {
+                        db.createObjectStore('operationLogs', { keyPath: 'id' });
+                    }
+                };
+                
+                request.onsuccess = (event) => {
+                    this.db = event.target.result;
+                    this.isReady = true;
+                    console.log("数据库连接成功");
+                    
+                    // 执行等待的回调
+                    this.readyCallbacks.forEach(callback => callback());
+                    this.readyCallbacks = [];
+                    
+                    // 迁移现有localStorage数据到IndexedDB
+                    this.migrateFromLocalStorage();
+                };
+                
+                request.onerror = (event) => {
+                    console.error("数据库错误:", event.target.error);
+                };
+            }
+            
+            // 确保数据库已准备就绪
+            onReady(callback) {
+                if (this.isReady) {
+                    callback();
+                } else {
+                    this.readyCallbacks.push(callback);
+                }
+            }
+            
+            // 迁移现有localStorage数据
+            migrateFromLocalStorage() {
+                try {
+                    // 获取所有localStorage数据
+                    const storeNames = ['emergencyItems', 'outboundRecords', 'borrowRecords', 'returnRecords', 'dataBackups'];
+                    
+                    storeNames.forEach(storeName => {
+                        const data = JSON.parse(localStorage.getItem(storeName) || '[]');
+                        if (data && data.length > 0) {
+                            this.saveAll(storeName, data);
+                            console.log(`已迁移 ${storeName} 数据(${data.length}条记录)`);
+                        }
+                    });
+                } catch (err) {
+                    console.error('数据迁移错误:', err);
+                }
+            }
+            
+            // 保存单个项目
+            save(storeName, item) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([storeName], 'readwrite');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.put(item);
+                    
+                    request.onsuccess = () => resolve(true);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+            }
+            
+            // 保存多个项目
+            saveAll(storeName, items) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([storeName], 'readwrite');
+                    const store = transaction.objectStore(storeName);
+                    
+                    // 使用事务确保全部写入或全部失败
+                    items.forEach(item => {
+                        store.put(item);
+                    });
+                    
+                    transaction.oncomplete = () => resolve(true);
+                    transaction.onerror = (event) => reject(event.target.error);
+                });
+            }
+            
+            // 获取所有项目
+            getAll(storeName) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([storeName], 'readonly');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.getAll();
+                    
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+            }
+            
+            // 通过ID获取指定项目
+            getById(storeName, id) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([storeName], 'readonly');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.get(id);
+                    
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+            }
+            
+            // 删除指定项目
+            delete(storeName, id) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([storeName], 'readwrite');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.delete(id);
+                    
+                    request.onsuccess = () => resolve(true);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+            }
+            
+            // 清空存储
+            clearStore(storeName) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([storeName], 'readwrite');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.clear();
+                    
+                    request.onsuccess = () => resolve(true);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+            }
+        }
+
+        // 操作日志记录
+        function logOperation(operation, details) {
+            const log = {
+                id: Date.now().toString(),
+                timestamp: new Date().toISOString(),
+                operation: operation,
+                details: details,
+                operator: document.getElementById('item-operator')?.value || '系统'
+            };
+            
+            // 保存到操作日志存储
+            StorageAPI.addItem('operationLogs', log);
+        }
+
+        // 数据操作API
+        const StorageAPI = {
+            db: new DBManager(),
+            
+            // 兼容模式 - 同时使用IndexedDB和localStorage
+            isCompatMode: true,
+            
+            // 保存数据到存储
+            async saveData(storeName, data) {
+                console.log(`正在保存${storeName}数据:`, data);
+                // 保存到IndexedDB
+                await new Promise(resolve => {
+                    this.db.onReady(async () => {
+                        await this.db.clearStore(storeName);
+                        await this.db.saveAll(storeName, data);
+                        resolve();
+                    });
+                });
+                
+                // 兼容模式下同时保存到localStorage
+                if (this.isCompatMode) {
+                    try {
+                        localStorage.setItem(storeName, JSON.stringify(data));
+                        console.log(`数据已保存到localStorage: ${storeName}`);
+                    } catch (err) {
+                        console.warn('localStorage存储失败，可能超出存储限制', err);
+                    }
+                }
+                
+                return true;
+            },
+            
+            // 从存储读取数据
+            async getData(storeName) {
+                // 尝试从IndexedDB读取
+                try {
+                    return await new Promise((resolve) => {
+                        this.db.onReady(async () => {
+                            const data = await this.db.getAll(storeName);
+                            resolve(data);
+                        });
+                    });
+                } catch (err) {
+                    console.error('从IndexedDB读取失败:', err);
+                    
+                    // 如果IndexedDB失败，从localStorage读取
+                    if (this.isCompatMode) {
+                        try {
+                            const data = JSON.parse(localStorage.getItem(storeName) || '[]');
+                            console.log(`从localStorage读取${storeName}数据:`, data);
+                            return data;
+                        } catch (err) {
+                            console.error('从localStorage读取失败:', err);
+                            return [];
+                        }
+                    }
+                    
+                    return [];
+                }
+            },
+            
+            // 添加单条记录
+            async addItem(storeName, item) {
+                const data = await this.getData(storeName);
+                data.push(item);
+                return this.saveData(storeName, data);
+            },
+            
+            // 更新单条记录
+            async updateItem(storeName, updatedItem) {
+                const data = await this.getData(storeName);
+                const index = data.findIndex(item => item.id === updatedItem.id);
+                
+                if (index !== -1) {
+                    data[index] = updatedItem;
+                    return this.saveData(storeName, data);
+                }
+                
+                return false;
+            },
+            
+            // 删除单条记录
+            async deleteItem(storeName, id) {
+                const data = await this.getData(storeName);
+                const newData = data.filter(item => item.id !== id);
+                return this.saveData(storeName, newData);
+            },
+            
+            // 创建备份
+            async createBackup() {
+                const backupData = {
+                    timestamp: Date.now(),
+                    emergencyItems: await this.getData('emergencyItems'),
+                    outboundRecords: await this.getData('outboundRecords'),
+                    returnRecords: await this.getData('returnRecords'),
+                    borrowRecords: await this.getData('borrowRecords')
+                };
+                
+                // 保存到dataBackups
+                let backups = await this.getData('dataBackups');
+                backups.push(backupData);
+                
+                // 最多保留10个备份
+                if (backups.length > 10) {
+                    backups = backups.slice(backups.length - 10);
+                }
+                
+                await this.saveData('dataBackups', backups);
+                return true;
+            },
+            
+            // 恢复备份
+            async restoreBackup(index) {
+                const backups = await this.getData('dataBackups');
+                if (index >= backups.length) return false;
+                
+                const backup = backups[index];
+                await this.saveData('emergencyItems', backup.emergencyItems || []);
+                await this.saveData('outboundRecords', backup.outboundRecords || []);
+                await this.saveData('returnRecords', backup.returnRecords || []);
+                await this.saveData('borrowRecords', backup.borrowRecords || []);
+                
+                return true;
+            }
+        };
+
+        // 初始化存储
+        if (!localStorage.getItem('emergencyItems')) {
+            localStorage.setItem('emergencyItems', JSON.stringify([]));
+        }
+        if (!localStorage.getItem('outboundRecords')) {
+            localStorage.setItem('outboundRecords', JSON.stringify([]));
+        }
+        if (!localStorage.getItem('returnRecords')) {
+            localStorage.setItem('returnRecords', JSON.stringify([]));
+        }
+        if (!localStorage.getItem('borrowRecords')) {
+            localStorage.setItem('borrowRecords', JSON.stringify([]));
+        }
+        if (!localStorage.getItem('dataBackups')) {
+            localStorage.setItem('dataBackups', JSON.stringify([]));
+        }
+        if (!localStorage.getItem('operationLogs')) {
+            localStorage.setItem('operationLogs', JSON.stringify([]));
+        }
+        
+        // 在标签页切换时添加加载状态
+        function showLoadingState(containerId, message = '加载中...') {
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.innerHTML = `<div class="loading-state" style="text-align: center; padding: 20px; color: #666;">${message}</div>`;
+            }
+        }
+
+        function hideLoadingState(containerId) {
+            // 移除加载状态，恢复原始内容结构
+            const container = document.getElementById(containerId);
+            if (container) {
+                const loadingElement = container.querySelector('.loading-state');
+                if (loadingElement) {
+                    loadingElement.remove();
+                }
+            }
+        }
+
+        // 切换标签页功能
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                const tabId = this.getAttribute('data-tab');
+                this.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+                
+                // 加载对应标签页的数据 - 优化版
+                if (tabId === 'inventory') {
+                    loadInventory();
+                } else if (tabId === 'outbound') {
+                    // 并行加载出库相关数据
+                    Promise.all([
+                        loadOutboundItems(),
+                        loadOutboundRecords()
+                    ]).catch(err => {
+                        console.error('出库数据加载失败:', err);
+                    });
+                } else if (tabId === 'return') {
+                    // 并行加载借还相关数据
+                    Promise.all([
+                        loadBorrowItems(),
+                        loadBorrowRecords(),
+                        loadBorrowRecordsForReturn(),
+                        loadReturnRecords()
+                    ]).catch(err => {
+                        console.error('借还数据加载失败:', err);
+                    });
+                } else if (tabId === 'statistics') {
+                    loadStatistics();
+                } else if (tabId === 'datamgmt') {
+                    loadBackupsList();
+                }
+            });
+        });
+        
+        // 内部子选项卡切换功能
+        document.querySelectorAll('.sub-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.sub-tab').forEach(t => {
+                    t.classList.remove('active');
+                    t.style.backgroundColor = '#eee';
+                    t.style.color = '#000';
+                });
+                document.querySelectorAll('.sub-tab-content').forEach(c => c.style.display = 'none');
+                
+                const subtabId = this.getAttribute('data-subtab');
+                this.classList.add('active');
+                this.style.backgroundColor = '#4CAF50';
+                this.style.color = 'white';
+                
+                document.getElementById(subtabId + '-content').style.display = 'block';
+            });
+        });
+        
+        // 原有逻辑提取为独立函数
+        async function executeOutboundLogic() {
+            try {
+                const itemName = document.getElementById('outbound-name').value;
+                const outboundQuantity = parseInt(document.getElementById('outbound-quantity').value);
+                
+                // 获取物资详情
+                const items = await StorageAPI.getData('emergencyItems');
+                const itemIndex = items.findIndex(item => item.name === itemName);
+                
+                if (itemIndex === -1) {
+                    alert('未找到该物资！');
+                    return;
+                }
+                
+                const item = items[itemIndex];
+                
+                // 检查库存是否足够
+                if (item.quantity < outboundQuantity) {
+                    alert(`库存不足！当前库存: ${item.quantity} ${item.unit}`);
+                    return;
+                }
+                
+                // 减少库存
+                item.quantity -= outboundQuantity;
+                item.totalValue = item.quantity * item.price;
+                
+                // 如果库存为0，可以选择删除该物资或保留记录
+                if (item.quantity === 0) {
+                    if (confirm('该物资库存已为0，是否从库存中删除？')) {
+                        items.splice(itemIndex, 1);
+                    }
+                }
+                
+                // 保存更新后的物资列表
+                await StorageAPI.saveData('emergencyItems', items);
+                
+                // 添加出库记录
+                const outboundRecord = {
+                    id: Date.now().toString(),
+                    name: itemName,
+                    quantity: outboundQuantity,
+                    unit: item.unit,
+                    recipient: document.getElementById('outbound-recipient').value,
+                    purpose: document.getElementById('outbound-purpose').value,
+                    date: document.getElementById('outbound-date').value,
+                    operator: document.getElementById('outbound-operator').value,
+                    notes: document.getElementById('outbound-notes').value
+                };
+                
+                // 保存出库记录
+                await StorageAPI.addItem('outboundRecords', outboundRecord);
+                
+                // 记录操作日志
+                logOperation('物资出库', { itemName: itemName, quantity: outboundQuantity, recipient: outboundRecord.recipient });
+                
+                alert('物资出库成功！');
+                document.getElementById('outbound-form').reset();
+                
+                // 并行刷新出库选项和记录
+                try {
+                    await Promise.all([
+                        loadOutboundItems(),
+                        loadOutboundRecords()
+                    ]);
+                } catch (refreshErr) {
+                    console.error('数据刷新失败:', refreshErr);
+                    // 即使刷新失败，操作已经成功，只需提示用户手动刷新
+                    alert('操作成功，但数据刷新失败，请手动刷新页面');
+                }
+                
+            } catch (err) {
+                console.error('出库操作失败:', err);
+                alert('出库操作失败，请重试。如果问题持续存在，请联系管理员。');
+            }
+        }
+        
+        // HTML转义函数
+        function escapeHtml(text) {
+            if (text == null) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // 加载库存数据
+        async function loadInventory(searchTerm = '') {
+            try {
+                const items = await StorageAPI.getData('emergencyItems');
+                const tableBody = document.querySelector('#inventory-table tbody');
+                
+                // 移除加载状态
+                hideLoadingState('inventory-table-body');
+                
+                tableBody.innerHTML = '';
+                
+                let totalQuantity = 0;
+                let totalValue = 0;
+                
+                const filteredItems = searchTerm ? 
+                    items.filter(item => 
+                        item.name.includes(searchTerm) || 
+                        item.category.includes(searchTerm) || 
+                        item.source.includes(searchTerm)
+                    ) : items;
+                
+                filteredItems.forEach(item => {
+                    totalQuantity += item.quantity;
+                    totalValue += item.totalValue;
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${escapeHtml(item.name)}</td>
+                        <td>${escapeHtml(item.category)}</td>
+                        <td>${escapeHtml(item.quantity.toString())}</td>
+                        <td>${escapeHtml(item.unit)}</td>
+                        <td>${escapeHtml(item.spec) || '无'}</td>
+                        <td>${escapeHtml(item.price.toFixed(2))}</td>
+                        <td>${escapeHtml(item.totalValue.toFixed(2))}</td>
+                        <td>${escapeHtml(item.source)}</td>
+                        <td>${escapeHtml(item.date)}</td>
+                        <td>${escapeHtml(item.usage) || '暂无'}</td>
+                        <td>${escapeHtml(item.notes) || '暂无'}</td>
+                        <td class="no-print">
+                            <button class="btn-edit" data-id="${escapeHtml(item.id)}">编辑</button>
+                            <button class="btn-delete" data-id="${escapeHtml(item.id)}">删除</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                // 更新统计信息
+                document.getElementById('total-quantity').textContent = totalQuantity;
+                document.getElementById('total-value').textContent = totalValue.toFixed(2);
+                
+                // 为编辑按钮添加事件（带错误处理）
+                document.querySelectorAll('.btn-edit').forEach(btn => {
+                    btn.addEventListener('click', async function() {
+                        try {
+                            const itemId = this.getAttribute('data-id');
+                            await showEditModal(itemId);
+                        } catch (err) {
+                            console.error('打开编辑窗口失败:', err);
+                            alert('打开编辑窗口失败，请重试');
+                        }
+                    });
+                });
+                
+                // 为删除按钮添加事件（带错误处理）
+                document.querySelectorAll('.btn-delete').forEach(btn => {
+                    btn.addEventListener('click', async function() {
+                        try {
+                            if (confirm('确定要删除该物资记录吗？')) {
+                                const itemId = this.getAttribute('data-id');
+                                const items = await StorageAPI.getData('emergencyItems');
+                                const itemToDelete = items.find(item => item.id === itemId);
+                                await StorageAPI.deleteItem('emergencyItems', itemId);
+                                // 记录操作日志
+                                if (itemToDelete) {
+                                    logOperation('物资删除', { itemName: itemToDelete.name, itemId: itemId });
+                                }
+                                await loadInventory(searchTerm);
+                                alert('删除成功');
+                            }
+                        } catch (err) {
+                            console.error('删除物资失败:', err);
+                            alert('删除失败，请重试');
+                        }
+                    });
+                });
+                
+            } catch (error) {
+                console.error('加载库存数据失败:', error);
+                hideLoadingState('inventory-table-body');
+                const tableBody = document.querySelector('#inventory-table tbody');
+                tableBody.innerHTML = '<tr><td colspan="12" style="text-align: center; color: #f56565;">加载数据失败，请重试</td></tr>';
+            }
+        }
+        
+        // 搜索功能
+        document.getElementById('btn-search').addEventListener('click', function() {
+            const searchTerm = document.getElementById('inventory-search').value;
+            loadInventory(searchTerm);
+        });
+        
+        // 重置搜索
+        document.getElementById('btn-reset').addEventListener('click', function() {
+            document.getElementById('inventory-search').value = '';
+            loadInventory();
+        });
+        
+        // 打印功能
+        document.getElementById('btn-print').addEventListener('click', function() {
+            window.print();
+        });
+        
+        // 加载物资选项到出库表单
+        async function loadOutboundItems() {
+            try {
+                const items = await StorageAPI.getData('emergencyItems');
+                const select = document.getElementById('outbound-name');
+                
+                // 清除现有选项
+                while (select.options.length > 1) {
+                    select.remove(1);
+                }
+                
+                // 添加新选项
+                items.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.name;
+                    option.textContent = `${item.name} (库存: ${item.quantity} ${item.unit})`;
+                    select.appendChild(option);
+                });
+                
+            } catch (err) {
+                console.error('加载出库物资选项失败:', err);
+                // 在选择框中显示错误信息
+                const select = document.getElementById('outbound-name');
+                const errorOption = document.createElement('option');
+                errorOption.value = '';
+                errorOption.textContent = '加载失败，请刷新页面';
+                errorOption.disabled = true;
+                select.appendChild(errorOption);
+            }
+        }
+        
+        // 加载出库记录
+        async function loadOutboundRecords() {
+            try {
+                const records = await StorageAPI.getData('outboundRecords');
+                const tableBody = document.querySelector('#outbound-table tbody');
+                
+                // 移除加载状态
+                hideLoadingState('outbound-table-body');
+                
+                tableBody.innerHTML = '';
+            
+            records.forEach(record => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${escapeHtml(record.name)}</td>
+                    <td>${escapeHtml(record.quantity.toString())}</td>
+                    <td>${escapeHtml(record.unit)}</td>
+                    <td>${escapeHtml(record.recipient)}</td>
+                    <td>${escapeHtml(record.purpose)}</td>
+                    <td>${escapeHtml(record.date)}</td>
+                    <td>${escapeHtml(record.operator)}</td>
+                    <td class="no-print">
+                        <button class="btn-delete-record" data-id="${escapeHtml(record.id)}">删除</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // 为删除按钮添加事件
+            document.querySelectorAll('.btn-delete-record').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    if (confirm('确定要删除该出库记录吗？')) {
+                        const recordId = this.getAttribute('data-id');
+                        await StorageAPI.deleteItem('outboundRecords', recordId);
+                        // 并行刷新
+                        Promise.all([loadOutboundRecords()]).catch(err => {
+                            console.error('数据刷新失败:', err);
+                        });
+                    }
+                });
+            });
+            } catch (error) {
+                console.error('加载出库记录失败:', error);
+                hideLoadingState('outbound-table-body');
+                const tableBody = document.querySelector('#outbound-table tbody');
+                tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #f56565;">加载数据失败，请重试</td></tr>';
+            }
+        }
+        
+        // 加载物资选项到借出表单
+        async function loadBorrowItems() {
+            const items = await StorageAPI.getData('emergencyItems');
+            const select = document.getElementById('borrow-name');
+            
+            // 清除现有选项
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            
+            // 添加新选项
+            items.forEach(item => {
+                if (item.quantity > 0) { // 只显示有库存的物资
+                    const option = document.createElement('option');
+                    option.value = item.name;
+                    option.textContent = `${item.name} (库存: ${item.quantity} ${item.unit})`;
+                    option.dataset.unit = item.unit;
+                    option.dataset.quantity = item.quantity;
+                    select.appendChild(option);
+                }
+            });
+            
+            // 设置默认日期为今天
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('borrow-date').value = today;
+        }
+        
+        async function executeBorrowLogic() {
+            try {
+                const itemName = document.getElementById('borrow-name').value;
+                const borrowQuantity = parseInt(document.getElementById('borrow-quantity').value);
+                
+                // 获取物资详情
+                const items = await StorageAPI.getData('emergencyItems');
+                const itemIndex = items.findIndex(item => item.name === itemName);
+                
+                if (itemIndex === -1) {
+                    alert('未找到该物资！');
+                    return;
+                }
+                
+                const item = items[itemIndex];
+                
+                // 检查库存是否足够
+                if (item.quantity < borrowQuantity) {
+                    alert(`库存不足！当前库存: ${item.quantity} ${item.unit}`);
+                    return;
+                }
+                
+                // 减少库存
+                item.quantity -= borrowQuantity;
+                item.totalValue = item.quantity * item.price;
+                
+                // 如果库存为0，可以选择删除该物资或保留记录
+                if (item.quantity === 0) {
+                    if (confirm('该物资库存已为0，是否从库存中删除？')) {
+                        items.splice(itemIndex, 1);
+                    }
+                }
+                
+                await StorageAPI.saveData('emergencyItems', items);
+                
+                // 添加借出记录
+                const borrowRecord = {
+                    id: Date.now().toString(),
+                    name: itemName,
+                    quantity: borrowQuantity,
+                    unit: item.unit,
+                    person: document.getElementById('borrow-person').value,
+                    purpose: document.getElementById('borrow-purpose').value,
+                    date: document.getElementById('borrow-date').value,
+                    expectedReturn: document.getElementById('borrow-expected-return').value || '',
+                    operator: document.getElementById('borrow-operator').value,
+                    contact: document.getElementById('borrow-contact').value || '',
+                    notes: document.getElementById('borrow-notes').value || '',
+                    returnedQuantity: 0, // 初始已归还数量为0
+                    status: '借出中' // 初始状态为借出中
+                };
+                
+                await StorageAPI.addItem('borrowRecords', borrowRecord);
+                
+                // 记录操作日志
+                logOperation('物资借出', { itemName: itemName, quantity: borrowQuantity, person: borrowRecord.person });
+                
+                alert('物资借出成功！');
+                document.getElementById('borrow-form').reset();
+                
+                // 并行刷新选项和记录
+                try {
+                    await Promise.all([
+                        loadBorrowItems(),
+                        loadBorrowRecords(),
+                        loadBorrowRecordsForReturn()
+                    ]);
+                } catch (refreshErr) {
+                    console.error('数据刷新失败:', refreshErr);
+                    alert('操作成功，但数据刷新失败，请手动刷新页面');
+                }
+                
+            } catch (err) {
+                console.error('借出操作失败:', err);
+                alert('借出操作失败，请重试。如果问题持续存在，请联系管理员。');
+            }
+        }
+        
+        // 加载借出记录
+        async function loadBorrowRecords() {
+            try {
+                const records = await StorageAPI.getData('borrowRecords');
+                const tableBody = document.querySelector('#borrow-table tbody');
+                
+                // 移除加载状态
+                hideLoadingState('borrow-table-body');
+                
+                tableBody.innerHTML = '';
+            
+            records.forEach(record => {
+                // 计算状态
+                let status = record.status;
+                if (record.returnedQuantity >= record.quantity) {
+                    status = '已归还';
+                } else if (record.returnedQuantity > 0) {
+                    status = '部分归还';
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${escapeHtml(record.name)}</td>
+                    <td>${escapeHtml(record.quantity.toString())}</td>
+                    <td>${escapeHtml(record.unit)}</td>
+                    <td>${escapeHtml(record.person)}</td>
+                    <td>${escapeHtml(record.date)}</td>
+                    <td>${escapeHtml(record.expectedReturn) || '-'}</td>
+                    <td>${escapeHtml(record.returnedQuantity.toString())}</td>
+                    <td>${escapeHtml(status)}</td>
+                    <td class="no-print">
+                        <button class="btn-delete-borrow" data-id="${escapeHtml(record.id)}">删除</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // 为删除按钮添加事件
+            document.querySelectorAll('.btn-delete-borrow').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    if (confirm('确定要删除该借出记录吗？删除后将不会自动调整库存和归还记录！')) {
+                        const recordId = this.getAttribute('data-id');
+                        const records = await StorageAPI.getData('borrowRecords');
+                        const recordToDelete = records.find(record => record.id === recordId);
+                        await StorageAPI.deleteItem('borrowRecords', recordId);
+                        
+                        // 如果有归还记录，也需要提示用户
+                        if (recordToDelete && recordToDelete.returnedQuantity > 0) {
+                            alert(`该借出记录已有${recordToDelete.returnedQuantity}${recordToDelete.unit}归还。删除此记录不会影响已归还的库存数量。`);
+                        }
+                        
+                        // 并行刷新相关数据
+                        Promise.all([
+                            loadBorrowRecords(),
+                            loadBorrowRecordsForReturn()
+                        ]).catch(err => {
+                            console.error('数据刷新失败:', err);
+                        });
+                    }
+                });
+            });
+            } catch (error) {
+                console.error('加载借出记录失败:', error);
+                hideLoadingState('borrow-table-body');
+                const tableBody = document.querySelector('#borrow-table tbody');
+                tableBody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #f56565;">加载数据失败，请重试</td></tr>';
+            }
+        }
+        
+        // 加载借出记录到归还表单
+        async function loadBorrowRecordsForReturn() {
+            const borrowRecords = await StorageAPI.getData('borrowRecords');
+            const select = document.getElementById('return-record');
+            
+            // 清除现有选项
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            
+            // 添加新选项 - 仅显示还有物资可归还的记录
+            borrowRecords.forEach(record => {
+                const remainingQty = record.quantity - record.returnedQuantity;
+                
+                if (remainingQty > 0) {
+                    const option = document.createElement('option');
+                    option.value = record.id;
+                    option.textContent = `${record.name} - ${record.person} (${record.date}) - 可归还: ${remainingQty}${record.unit}`;
+                    option.dataset.name = record.name;
+                    option.dataset.unit = record.unit;
+                    option.dataset.remainingQty = remainingQty;
+                    option.dataset.person = record.person;
+                    select.appendChild(option);
+                }
+            });
+            
+            // 设置默认日期为今天
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('return-date').value = today;
+        }
+        
+        async function executeReturnLogic() {
+            try {
+                const borrowId = document.getElementById('return-record').value;
+                const returnQuantity = parseInt(document.getElementById('return-quantity').value);
+                
+                if (!borrowId) {
+                    alert('请选择要归还的借出记录！');
+                    return;
+                }
+                
+                // 获取所选记录的详细信息
+                const selectedOption = document.getElementById('return-record').options[document.getElementById('return-record').selectedIndex];
+                const itemName = selectedOption.dataset.name;
+                const itemUnit = selectedOption.dataset.unit;
+                const borrowPerson = selectedOption.dataset.person;
+                const remainingQty = parseInt(selectedOption.dataset.remainingQty);
+                
+                // 检查归还数量是否有效
+                if (returnQuantity <= 0) {
+                    alert('归还数量必须大于0！');
+                    return;
+                }
+                
+                if (returnQuantity > remainingQty) {
+                    alert(`归还数量超出可归还数量！最多可归还: ${remainingQty}${itemUnit}`);
+                    return;
+                }
+                
+                // 更新借出记录的归还数量
+                const borrowRecords = await StorageAPI.getData('borrowRecords');
+                const borrowRecord = borrowRecords.find(record => record.id === borrowId);
+                
+                if (!borrowRecord) {
+                    alert('找不到相关借出记录，无法完成归还！');
+                    return;
+                }
+                
+                borrowRecord.returnedQuantity += returnQuantity;
+                
+                // 更新借出记录状态
+                if (borrowRecord.returnedQuantity >= borrowRecord.quantity) {
+                    borrowRecord.status = '已归还';
+                } else {
+                    borrowRecord.status = '部分归还';
+                }
+                
+                // 保存更新后的借出记录
+                await StorageAPI.saveData('borrowRecords', borrowRecords);
+                
+                // 更新库存
+                const items = await StorageAPI.getData('emergencyItems');
+                let itemIndex = items.findIndex(item => item.name === itemName);
+                
+                const returnCondition = document.getElementById('return-condition').value;
+                // 只有物资状态为"完好"或"轻微损坏"时才添加回库存
+                if (returnCondition === '完好' || returnCondition === '轻微损坏') {
+                    if (itemIndex !== -1) {
+                        // 物资存在，更新数量
+                        items[itemIndex].quantity += returnQuantity;
+                        items[itemIndex].totalValue = items[itemIndex].quantity * items[itemIndex].price;
+                    } else {
+                        // 物资已被删除，需要创建新记录
+                        alert('该物资在库存中不存在，将创建新记录。');
+                        
+                        // 创建新物资记录
+                        items.push({
+                            id: Date.now().toString(),
+                            name: itemName,
+                            category: '归还物资', // 默认类别
+                            quantity: returnQuantity,
+                            unit: itemUnit,
+                            price: 0, // 默认价格为0，需要用户手动更新
+                            totalValue: 0,
+                            source: '物资归还',
+                            date: document.getElementById('return-date').value,
+                            operator: document.getElementById('return-operator').value,
+                            usage: '',
+                            notes: `由借出记录${borrowId}归还`
+                        });
+                        
+                        alert('请在库存管理中更新该物资的类别和价格信息。');
+                    }
+                    
+                    // 保存更新后的物资列表
+                    await StorageAPI.saveData('emergencyItems', items);
+                }
+                
+                // 添加归还记录
+                const returnRecord = {
+                    id: Date.now().toString(),
+                    borrowId: borrowId,
+                    name: itemName,
+                    quantity: returnQuantity,
+                    unit: itemUnit,
+                    condition: returnCondition,
+                    borrowPerson: borrowPerson,
+                    person: document.getElementById('return-person').value,
+                    date: document.getElementById('return-date').value,
+                    operator: document.getElementById('return-operator').value,
+                    notes: document.getElementById('return-notes').value
+                };
+                
+                // 保存归还记录
+                await StorageAPI.addItem('returnRecords', returnRecord);
+                
+                // 记录操作日志
+                logOperation('物资归还', { itemName: itemName, quantity: returnQuantity, person: returnRecord.person, condition: returnCondition });
+                
+                alert('物资归还成功！');
+                document.getElementById('return-form').reset();
+                
+                // 并行刷新选项和记录
+                try {
+                    await Promise.all([
+                        loadBorrowRecordsForReturn(),
+                        loadReturnRecords(),
+                        loadBorrowRecords()
+                    ]);
+                } catch (refreshErr) {
+                    console.error('数据刷新失败:', refreshErr);
+                    alert('操作成功，但数据刷新失败，请手动刷新页面');
+                }
+                
+            } catch (err) {
+                console.error('归还操作失败:', err);
+                alert('归还操作失败，请重试。如果问题持续存在，请联系管理员。');
+            }
+        }
+        
+        // 加载归还记录
+        async function loadReturnRecords() {
+            try {
+                const records = await StorageAPI.getData('returnRecords');
+                const tableBody = document.querySelector('#return-table tbody');
+                
+                // 移除加载状态
+                hideLoadingState('return-table-body');
+                
+                tableBody.innerHTML = '';
+            
+            records.forEach(record => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${escapeHtml(record.name)}</td>
+                    <td>${escapeHtml(record.quantity.toString())}</td>
+                    <td>${escapeHtml(record.unit)}</td>
+                    <td>${escapeHtml(record.condition)}</td>
+                    <td>${escapeHtml(record.person)}</td>
+                    <td>${escapeHtml(record.date)}</td>
+                    <td>${escapeHtml(record.operator)}</td>
+                    <td class="no-print">
+                        <button class="btn-delete-return" data-id="${escapeHtml(record.id)}">删除</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // 为删除按钮添加事件
+            document.querySelectorAll('.btn-delete-return').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    if (confirm('确定要删除该归还记录吗？删除后将不会自动调整库存！')) {
+                        const recordId = this.getAttribute('data-id');
+                        const records = await StorageAPI.getData('returnRecords');
+                        const recordToDelete = records.find(record => record.id === recordId);
+                        await StorageAPI.deleteItem('returnRecords', recordId);
+                        
+                        // 更新对应的借出记录
+                        if (recordToDelete && recordToDelete.borrowId) {
+                            const borrowRecords = await StorageAPI.getData('borrowRecords');
+                            const borrowRecord = borrowRecords.find(record => record.id === recordToDelete.borrowId);
+                            
+                            if (borrowRecord) {
+                                borrowRecord.returnedQuantity -= recordToDelete.quantity;
+                                if (borrowRecord.returnedQuantity <= 0) {
+                                    borrowRecord.returnedQuantity = 0;
+                                    borrowRecord.status = '借出中';
+                                } else if (borrowRecord.returnedQuantity < borrowRecord.quantity) {
+                                    borrowRecord.status = '部分归还';
+                                }
+                                await StorageAPI.saveData('borrowRecords', borrowRecords);
+                                loadBorrowRecords();
+                            }
+                        }
+                        
+                        // 提示用户可能需要手动调整库存
+                        if (recordToDelete && (recordToDelete.condition === '完好' || recordToDelete.condition === '轻微损坏')) {
+                            alert(`已删除归还记录。如有需要，请手动减少【${recordToDelete.name}】的库存${recordToDelete.quantity}${recordToDelete.unit}。`);
+                        } else {
+                            alert('已删除归还记录。');
+                        }
+                        
+                        // 并行刷新相关数据
+                        Promise.all([
+                            loadReturnRecords(),
+                            loadBorrowRecordsForReturn(),
+                            loadBorrowRecords()
+                        ]).catch(err => {
+                            console.error('数据刷新失败:', err);
+                        });
+                    }
+                });
+            });
+            } catch (error) {
+                console.error('加载归还记录失败:', error);
+                hideLoadingState('return-table-body');
+                const tableBody = document.querySelector('#return-table tbody');
+                tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #f56565;">加载数据失败，请重试</td></tr>';
+            }
+        }
+        
+        // 修改统计功能以考虑借出和归还记录
+        async function loadStatistics() {
+            try {
+                const items = await StorageAPI.getData('emergencyItems');
+                const outboundRecords = await StorageAPI.getData('outboundRecords');
+                const returnRecords = await StorageAPI.getData('returnRecords');
+                const borrowRecords = await StorageAPI.getData('borrowRecords');
+            
+            // 按类别统计
+            const categoryStats = {};
+            items.forEach(item => {
+                if (!categoryStats[item.category]) {
+                    categoryStats[item.category] = {
+                        count: 0,
+                        totalQuantity: 0,
+                        totalValue: 0
+                    };
+                }
+                categoryStats[item.category].count++;
+                categoryStats[item.category].totalQuantity += item.quantity;
+                categoryStats[item.category].totalValue += item.totalValue;
+            });
+            
+            const categoryTableBody = document.querySelector('#category-stats tbody');
+            
+            // 移除加载状态
+            hideLoadingState('category-stats-body');
+            
+            categoryTableBody.innerHTML = '';
+            
+            for (const category in categoryStats) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${escapeHtml(category)}</td>
+                    <td>${escapeHtml(categoryStats[category].count.toString())}</td>
+                    <td>${escapeHtml(categoryStats[category].totalQuantity.toString())}</td>
+                    <td>${escapeHtml(categoryStats[category].totalValue.toFixed(2))}</td>
+                `;
+                categoryTableBody.appendChild(row);
+            }
+            
+            // 出入库统计
+            // 获取每种物资的入库总量
+            const inboundTotals = {};
+            items.forEach(item => {
+                if (!inboundTotals[item.name]) {
+                    inboundTotals[item.name] = {
+                        inbound: 0,
+                        outbound: 0,
+                        returned: 0,
+                        currentStock: 0,
+                        unit: item.unit,
+                        price: item.price
+                    };
+                }
+                inboundTotals[item.name].inbound += item.quantity;
+                inboundTotals[item.name].currentStock = item.quantity;
+            });
+            
+            // 获取每种物资的出库总量
+            outboundRecords.forEach(record => {
+                if (!inboundTotals[record.name]) {
+                    inboundTotals[record.name] = {
+                        inbound: 0,
+                        outbound: 0,
+                        returned: 0,
+                        currentStock: 0,
+                        unit: record.unit,
+                        price: 0
+                    };
+                }
+                inboundTotals[record.name].outbound += record.quantity;
+            });
+            
+            // 获取每种物资的归还总量
+            returnRecords.forEach(record => {
+                if (record.condition === '完好' || record.condition === '轻微损坏') {
+                    if (!inboundTotals[record.name]) {
+                        inboundTotals[record.name] = {
+                            inbound: 0,
+                            outbound: 0,
+                            returned: 0,
+                            currentStock: 0,
+                            unit: record.unit,
+                            price: 0
+                        };
+                    }
+                    inboundTotals[record.name].returned += record.quantity;
+                }
+            });
+            
+            const inOutTableBody = document.querySelector('#in-out-stats tbody');
+            
+            // 移除加载状态
+            hideLoadingState('in-out-stats-body');
+            
+            inOutTableBody.innerHTML = '';
+            
+            for (const name in inboundTotals) {
+                const value = inboundTotals[name].currentStock * inboundTotals[name].price;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${escapeHtml(name)}</td>
+                    <td>${escapeHtml((inboundTotals[name].inbound + inboundTotals[name].outbound - inboundTotals[name].returned).toString())}</td>
+                    <td>${escapeHtml(inboundTotals[name].outbound.toString())}</td>
+                    <td>${escapeHtml(inboundTotals[name].currentStock.toString())} ${escapeHtml(inboundTotals[name].unit)}</td>
+                    <td>${escapeHtml(value.toFixed(2))}</td>
+                `;
+                inOutTableBody.appendChild(row);
+            }
+            } catch (error) {
+                console.error('加载统计数据失败:', error);
+                hideLoadingState('category-stats-body');
+                hideLoadingState('in-out-stats-body');
+                
+                const categoryTableBody = document.querySelector('#category-stats tbody');
+                const inOutTableBody = document.querySelector('#in-out-stats tbody');
+                
+                categoryTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #f56565;">加载数据失败，请重试</td></tr>';
+                inOutTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #f56565;">加载数据失败，请重试</td></tr>';
+            }
+        }
+        
+        // 数据导出功能
+        document.getElementById('export-data').addEventListener('click', async function() {
+            try {
+                this.disabled = true;
+                this.textContent = '导出中...';
+                await exportData();
+            } catch (err) {
+                console.error('导出操作失败:', err);
+                alert('导出操作失败，请重试');
+            } finally {
+                this.disabled = false;
+                this.textContent = '导出数据备份';
+            }
+        });
+        
+        // 数据导入功能
+        document.getElementById('import-button').addEventListener('click', async function() {
+            try {
+                const fileInput = document.getElementById('import-data');
+                if (fileInput.files.length > 0) {
+                    this.disabled = true;
+                    this.textContent = '导入中...';
+                    await importData(fileInput.files[0]);
+                } else {
+                    alert('请先选择要导入的备份文件');
+                }
+            } catch (err) {
+                console.error('导入操作失败:', err);
+                alert('导入操作失败，请重试');
+            } finally {
+                this.disabled = false;
+                this.textContent = '导入数据';
+            }
+        });
+        
+        // 创建手动备份
+        document.getElementById('create-backup').addEventListener('click', async function() {
+            try {
+                this.disabled = true;
+                this.textContent = '创建中...';
+                await createBackup();
+                alert('备份创建成功！');
+                await loadBackupsList();
+            } catch (err) {
+                console.error('创建备份失败:', err);
+                alert('创建备份失败，请重试');
+            } finally {
+                this.disabled = false;
+                this.textContent = '创建手动备份';
+            }
+        });
+        
+        // 显示备份恢复界面
+        document.getElementById('restore-backup').addEventListener('click', function() {
+            showBackupList();
+        });
+        
+        // 统一的模态框关闭处理
+        document.querySelectorAll('.close-modal').forEach(closeBtn => {
+            closeBtn.addEventListener('click', function() {
+                // 查找最近的模态框父元素
+                const modal = this.closest('.modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+        
+        // 点击模态框外部关闭（统一处理）
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        });
+        
+        // 支持多种导出格式
+        function exportToCSV(data, filename) {
+            const csv = convertToCSV(data);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        }
+
+        function exportToExcel(data, filename) {
+            // 使用第三方库如 SheetJS 导出 Excel
+        }
+
+        function convertToCSV(data) {
+            if (!data || data.length === 0) return '';
+            
+            const headers = Object.keys(data[0]);
+            const csvContent = [
+                headers.join(','),
+                ...data.map(row => 
+                    headers.map(header => {
+                        const value = row[header] || '';
+                        // 处理包含逗号或引号的值
+                        return typeof value === 'string' && (value.includes(',') || value.includes('"')) 
+                            ? `"${value.replace(/"/g, '""')}"` 
+                            : value;
+                    }).join(',')
+                )
+            ].join('\n');
+            
+            return csvContent;
+        }
+
+        // 导出数据函数
+        async function exportData() {
+            try {
+                const data = {
+                    emergencyItems: await StorageAPI.getData('emergencyItems'),
+                    outboundRecords: await StorageAPI.getData('outboundRecords'),
+                    returnRecords: await StorageAPI.getData('returnRecords'),
+                    borrowRecords: await StorageAPI.getData('borrowRecords')
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = '物资库数据备份_' + new Date().toISOString().slice(0,10) + '.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert('数据导出成功！');
+                
+            } catch (err) {
+                console.error('数据导出失败:', err);
+                alert('数据导出失败，请重试。错误信息：' + err.message);
+            }
+        }
+        
+        // 导入数据函数
+        async function importData(file) {
+            if (!file) {
+                alert('请选择要导入的文件');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onerror = function() {
+                alert('文件读取失败，请重试');
+            };
+            
+            reader.onload = async function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    // 验证数据格式
+                    if (!data || typeof data !== 'object') {
+                        throw new Error('数据格式无效');
+                    }
+                    
+                    if (confirm('导入将覆盖现有数据，确认继续？')) {
+                        // 逐个保存数据，确保每个操作都有错误处理
+                        await StorageAPI.saveData('emergencyItems', data.emergencyItems || []);
+                        await StorageAPI.saveData('outboundRecords', data.outboundRecords || []);
+                        await StorageAPI.saveData('returnRecords', data.returnRecords || []);
+                        await StorageAPI.saveData('borrowRecords', data.borrowRecords || []);
+                        
+                        alert('数据导入成功！页面将自动刷新。');
+                        setTimeout(() => location.reload(), 1000);
+                    }
+                } catch(err) {
+                    console.error('数据导入失败:', err);
+                    if (err instanceof SyntaxError) {
+                        alert('文件格式错误，请确保选择的是有效的JSON备份文件');
+                    } else {
+                        alert('数据导入失败：' + err.message);
+                    }
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        // 创建备份函数
+        async function createBackup() {
+            await StorageAPI.createBackup();
+            localStorage.setItem('lastBackupTime', Date.now().toString());
+        }
+        
+        // 加载备份列表
+        async function loadBackupsList() {
+            try {
+                const backups = await StorageAPI.getData('dataBackups');
+                const backupList = document.getElementById('backup-list');
+                
+                // 移除加载状态
+                hideLoadingState('backup-list');
+                
+                backupList.innerHTML = '';
+                
+                if (backups.length === 0) {
+                    backupList.innerHTML = '<li>暂无备份记录</li>';
+                    return;
+                }
+                
+                backups.forEach((backup, index) => {
+                    const date = new Date(backup.timestamp).toLocaleString();
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span>备份时间: ${escapeHtml(date)}</span>
+                        <div>
+                            <button class="btn-restore" data-index="${index}">恢复</button>
+                            <button class="btn-delete-backup" data-index="${index}">删除</button>
+                        </div>
+                    `;
+                    backupList.appendChild(li);
+                });
+                
+                // 使用事件委托管理备份列表按钮点击
+                backupList.removeEventListener('click', backupListClickHandler); // 移除旧的事件处理
+                backupList.addEventListener('click', backupListClickHandler);
+            } catch (err) {
+                console.error('加载备份列表失败:', err);
+                hideLoadingState('backup-list');
+                const backupList = document.getElementById('backup-list');
+                backupList.innerHTML = '<li style="color: #f56565;">加载备份列表失败，请刷新页面重试</li>';
+            }
+        }
+        
+        // 备份列表按钮事件处理函数
+        async function backupListClickHandler(e) {
+            // 恢复按钮
+            if (e.target.classList.contains('btn-restore')) {
+                const index = parseInt(e.target.dataset.index);
+                await restoreBackup(index);
+            }
+            // 删除按钮
+            else if (e.target.classList.contains('btn-delete-backup')) {
+                const index = parseInt(e.target.dataset.index);
+                await deleteBackup(index);
+            }
+        }
+        
+        // 显示备份列表模态框
+        async function showBackupList() {
+            try {
+                const backups = await StorageAPI.getData('dataBackups');
+                const modalBackupList = document.getElementById('modal-backup-list');
+                modalBackupList.innerHTML = '';
+                
+                if (backups.length === 0) {
+                    modalBackupList.innerHTML = '<li>暂无备份记录</li>';
+                } else {
+                    backups.forEach((backup, index) => {
+                        const date = new Date(backup.timestamp).toLocaleString();
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <span>备份时间: ${escapeHtml(date)}</span>
+                            <button class="btn-restore-modal" data-index="${index}">恢复此备份</button>
+                        `;
+                        modalBackupList.appendChild(li);
+                    });
+                }
+                
+                // 使用事件委托管理模态框按钮点击
+                modalBackupList.removeEventListener('click', modalBackupListClickHandler); // 移除旧的事件处理
+                modalBackupList.addEventListener('click', modalBackupListClickHandler);
+                
+                document.getElementById('backup-modal').style.display = 'block';
+            } catch (err) {
+                console.error('显示备份列表失败:', err);
+                alert('显示备份列表失败，请刷新页面重试');
+            }
+        }
+        
+        // 模态框按钮事件处理函数
+        async function modalBackupListClickHandler(e) {
+            if (e.target.classList.contains('btn-restore-modal')) {
+                const index = parseInt(e.target.dataset.index);
+                await restoreBackup(index);
+            }
+        }
+        
+        // 恢复备份函数
+        async function restoreBackup(index) {
+            try {
+                if (confirm('恢复将覆盖当前数据，确认继续？')) {
+                    const success = await StorageAPI.restoreBackup(index);
+                    if (success) {
+                        alert('备份恢复成功！');
+                        location.reload();
+                    } else {
+                        alert('恢复失败，未找到备份！');
+                    }
+                }
+            } catch (err) {
+                console.error('恢复备份失败:', err);
+                alert('恢复备份过程中发生错误，请重试');
+            }
+        }
+        
+        // 删除备份函数
+        async function deleteBackup(index) {
+            try {
+                if (confirm('确定要删除此备份吗？')) {
+                    const backups = await StorageAPI.getData('dataBackups');
+                    if (index >= backups.length) {
+                        alert('备份不存在，可能已被删除');
+                        return;
+                    }
+                    
+                    backups.splice(index, 1);
+                    await StorageAPI.saveData('dataBackups', backups);
+                    await loadBackupsList();
+                    alert('备份已删除');
+                }
+            } catch (err) {
+                console.error('删除备份失败:', err);
+                alert('删除备份过程中发生错误，请重试');
+            }
+        }
+        
+        // 自动备份功能
+        async function setupAutoBackup() {
+            try {
+                // 每天自动保存一次
+                const BACKUP_INTERVAL = 24 * 60 * 60 * 1000; // 24小时
+                const REMINDER_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7天
+                
+                // 检查上次备份时间
+                const lastBackup = localStorage.getItem('lastBackupTime');
+                const now = Date.now();
+                
+                if (!lastBackup || (now - parseInt(lastBackup)) > BACKUP_INTERVAL) {
+                    await createBackup();
+                    console.log('自动备份已创建');
+                }
+                
+                // 检查是否需要显示备份提醒
+                if (!lastBackup || (now - parseInt(lastBackup)) > REMINDER_INTERVAL) {
+                    showBackupReminder(lastBackup ? Math.floor((now - parseInt(lastBackup)) / (24 * 60 * 60 * 1000)) : 7);
+                }
+                
+                // 检查数据一致性
+                await checkDataIntegrity();
+            } catch (err) {
+                console.error('自动备份设置失败:', err);
+            }
+        }
+        
+        // 显示备份提醒
+        function showBackupReminder(days) {
+            const reminderElem = document.getElementById('backup-reminder');
+            document.getElementById('days-count').textContent = days;
+            reminderElem.style.display = 'block';
+            
+            // 立即备份按钮
+            document.getElementById('create-export-now').addEventListener('click', async function() {
+                await createBackup();
+                // 创建文件备份
+                await exportData();
+                reminderElem.style.display = 'none';
+                alert('备份已创建，并已导出备份文件');
+            });
+            
+            // 稍后提醒按钮
+            document.getElementById('remind-later').addEventListener('click', function() {
+                reminderElem.style.display = 'none';
+                // 推迟3天再提醒
+                const postponeDate = Date.now() - (4 * 24 * 60 * 60 * 1000); // 当前时间减4天
+                localStorage.setItem('lastBackupTime', postponeDate.toString());
+            });
+        }
+        
+        // 检查数据一致性
+        async function checkDataIntegrity() {
+            try {
+                const items = await StorageAPI.getData('emergencyItems');
+                const outboundRecords = await StorageAPI.getData('outboundRecords');
+                const borrowRecords = await StorageAPI.getData('borrowRecords');
+                const returnRecords = await StorageAPI.getData('returnRecords');
+                
+                let warnings = [];
+                
+                // 检查借出记录与返回记录的一致性
+                returnRecords.forEach(ret => {
+                    const borrowRecord = borrowRecords.find(b => b.id === ret.borrowId);
+                    if (!borrowRecord) {
+                        warnings.push(`归还记录(${ret.name}, ${ret.date})与借出记录不一致`);
+                    }
+                });
+                
+                // 检查物资名称唯一性
+                const nameSet = new Set();
+                const duplicateNames = [];
+                items.forEach(item => {
+                    if (nameSet.has(item.name)) {
+                        duplicateNames.push(item.name);
+                    } else {
+                        nameSet.add(item.name);
+                    }
+                });
+                
+                if (duplicateNames.length > 0) {
+                    warnings.push(`发现重复物资名称: ${duplicateNames.join(', ')}`);
+                }
+                
+                // 显示警告
+                if (warnings.length > 0) {
+                    console.warn('数据一致性检查警告:', warnings);
+                    
+                    // 在数据管理页面显示警告
+                    const warningDiv = document.createElement('div');
+                    warningDiv.className = 'data-integrity-warning';
+                    warningDiv.innerHTML = `
+                        <strong>数据一致性检查发现以下问题:</strong>
+                        <ul>
+                            ${warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('')}
+                        </ul>
+                        <p>建议进行数据备份并检查相关记录</p>
+                    `;
+                    
+                    const dataMgmtDiv = document.getElementById('datamgmt');
+                    if (dataMgmtDiv) {
+                        dataMgmtDiv.insertBefore(warningDiv, dataMgmtDiv.firstChild.nextSibling);
+                    }
+                }
+                
+                return warnings.length === 0;
+            } catch (err) {
+                console.error('数据一致性检查失败:', err);
+                return false;
+            }
+        }
+        
+        // 通用验证函数
+        function validateInput(value, type, options = {}) {
+            const { min, max, required, pattern, maxLength } = options;
+            
+            // 必填验证
+            if (required && (!value || value.trim() === '')) {
+                return '此字段为必填项';
+            }
+            
+            if (!value || value.trim() === '') {
+                return null; // 非必填字段为空时通过验证
+            }
+            
+            value = value.trim();
+            
+            // 长度验证
+            if (maxLength && value.length > maxLength) {
+                return `输入长度不能超过${maxLength}个字符`;
+            }
+            
+            // 类型验证
+            switch (type) {
+                case 'number':
+                    const num = parseFloat(value);
+                    if (isNaN(num)) {
+                        return '请输入有效数字';
+                    }
+                    if (min !== undefined && num < min) {
+                        return `数值不能小于${min}`;
+                    }
+                    if (max !== undefined && num > max) {
+                        return `数值不能大于${max}`;
+                    }
+                    break;
+                    
+                case 'integer':
+                    const int = parseInt(value);
+                    if (isNaN(int) || int.toString() !== value) {
+                        return '请输入有效整数';
+                    }
+                    if (min !== undefined && int < min) {
+                        return `数值不能小于${min}`;
+                    }
+                    if (max !== undefined && int > max) {
+                        return `数值不能大于${max}`;
+                    }
+                    break;
+                    
+                case 'date':
+                    const date = new Date(value);
+                    if (isNaN(date.getTime())) {
+                        return '请输入有效日期';
+                    }
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    if (options.notFuture && date > today) {
+                        return '日期不能是未来日期';
+                    }
+                    if (options.notPast && date < today) {
+                        return '日期不能是过去日期';
+                    }
+                    break;
+                    
+                case 'text':
+                    // 检查特殊字符
+                    if (pattern && !pattern.test(value)) {
+                        return '输入格式不正确';
+                    }
+                    // 防止XSS攻击
+                    if (/<script|javascript:|on\w+=/i.test(value)) {
+                        return '输入包含不安全内容';
+                    }
+                    break;
+                    
+                case 'phone':
+                    const phonePattern = /^1[3-9]\d{9}$/;
+                    if (!phonePattern.test(value)) {
+                        return '请输入有效的手机号码';
+                    }
+                    break;
+            }
+            
+            return null;
+        }
+
+        // 增强表单验证函数
+        function enhanceFormValidation() {
+            // 物资入库表单验证
+            const registerForm = document.getElementById('register-form');
+            if (registerForm) {
+                registerForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    // 清除所有错误
+                    clearFormErrors(this);
+                    
+                    // 检查物资名称唯一性
+                    const itemName = document.getElementById('item-name').value.trim();
+                    if (await isItemNameDuplicate(itemName)) {
+                        showError('item-name', '物资名称已存在，请使用不同名称或修改现有记录');
+                        return;
+                    }
+                    
+                    // 进行常规字段验证
+                    let isValid = true;
+                    
+                    // 数量必须大于0
+                    const quantity = parseInt(document.getElementById('item-quantity').value);
+                    if (isNaN(quantity) || quantity <= 0) {
+                        showError('item-quantity', '数量必须大于0');
+                        isValid = false;
+                    }
+                    
+                    // 价格必须大于等于0（如果填写了的话）
+                    const price = document.getElementById('item-price').value;
+                    let finalPrice = 0;
+                    if (price !== '') {
+                        finalPrice = parseFloat(price);
+                        if (isNaN(finalPrice) || finalPrice < 0) {
+                            showError('item-price', '价格不能为负数');
+                            isValid = false;
+                        }
+                    }
+                    
+                    // 如果验证通过，提交表单
+                    if (isValid) {
+                        // 创建物资记录并保存
+                        const item = {
+                            id: Date.now().toString(),
+                            name: itemName,
+                            category: document.getElementById('item-category').value,
+                            quantity: quantity,
+                            unit: document.getElementById('item-unit').value,
+                            spec: document.getElementById('item-spec').value,
+                            price: finalPrice,
+                            source: document.getElementById('item-source').value,
+                            date: document.getElementById('item-date').value,
+                            operator: document.getElementById('item-operator').value,
+                            usage: document.getElementById('item-usage').value,
+                            notes: document.getElementById('item-notes').value
+                        };
+                        
+                        // 计算总价值
+                        item.totalValue = item.quantity * item.price;
+                        
+                        try {
+                            await StorageAPI.addItem('emergencyItems', item);
+                            // 记录操作日志
+                            logOperation('物资入库', { itemName: item.name, quantity: item.quantity, operator: item.operator });
+                            alert('物资入库登记成功！');
+                            this.reset();
+                        } catch (err) {
+                            console.error('保存物资记录失败:', err);
+                            alert('保存失败，请重试');
+                        }
+                    }
+                });
+            }
+        }
+
+        // 增强出库表单验证
+        function enhanceOutboundFormValidation() {
+            const outboundForm = document.getElementById('outbound-form');
+            if (outboundForm) {
+                outboundForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    // 清除所有错误
+                    clearFormErrors(this);
+                    
+                    let isValid = true;
+                    
+                    // 验证物资名称
+                    const itemName = document.getElementById('outbound-name').value;
+                    if (!itemName) {
+                        showError('outbound-name', '请选择要出库的物资');
+                        isValid = false;
+                    }
+                    
+                    // 验证出库数量
+                    const quantity = document.getElementById('outbound-quantity').value;
+                    const quantityError = validateInput(quantity, 'integer', { min: 1, max: 999999, required: true });
+                    if (quantityError) {
+                        showError('outbound-quantity', quantityError);
+                        isValid = false;
+                    }
+                    
+                    // 验证接收人
+                    const recipient = document.getElementById('outbound-recipient').value;
+                    const recipientError = validateInput(recipient, 'text', { required: true, maxLength: 50 });
+                    if (recipientError) {
+                        showError('outbound-recipient', recipientError);
+                        isValid = false;
+                    }
+                    
+                    // 验证用途
+                    const purpose = document.getElementById('outbound-purpose').value;
+                    const purposeError = validateInput(purpose, 'text', { required: true, maxLength: 100 });
+                    if (purposeError) {
+                        showError('outbound-purpose', purposeError);
+                        isValid = false;
+                    }
+                    
+                    // 验证日期
+                    const date = document.getElementById('outbound-date').value;
+                    const dateError = validateInput(date, 'date', { required: true, notFuture: true });
+                    if (dateError) {
+                        showError('outbound-date', dateError);
+                        isValid = false;
+                    }
+                    
+                    // 验证操作员
+                    const operator = document.getElementById('outbound-operator').value;
+                    const operatorError = validateInput(operator, 'text', { required: true, maxLength: 20 });
+                    if (operatorError) {
+                        showError('outbound-operator', operatorError);
+                        isValid = false;
+                    }
+                    
+                    if (isValid) {
+                        // 执行原有的出库逻辑
+                        await executeOutboundLogic();
+                    }
+                });
+            }
+        }
+
+        // 增强借出表单验证
+        function enhanceBorrowFormValidation() {
+            const borrowForm = document.getElementById('borrow-form');
+            if (borrowForm) {
+                borrowForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    clearFormErrors(this);
+                    let isValid = true;
+                    
+                    // 验证借出数量
+                    const quantity = document.getElementById('borrow-quantity').value;
+                    const quantityError = validateInput(quantity, 'integer', { min: 1, max: 999999, required: true });
+                    if (quantityError) {
+                        showError('borrow-quantity', quantityError);
+                        isValid = false;
+                    }
+                    
+                    // 验证借出人
+                    const person = document.getElementById('borrow-person').value;
+                    const personError = validateInput(person, 'text', { required: true, maxLength: 20 });
+                    if (personError) {
+                        showError('borrow-person', personError);
+                        isValid = false;
+                    }
+                    
+                    // 验证联系方式（如果填写）
+                    const contact = document.getElementById('borrow-contact').value;
+                    if (contact) {
+                        const contactError = validateInput(contact, 'phone');
+                        if (contactError) {
+                            showError('borrow-contact', contactError);
+                            isValid = false;
+                        }
+                    }
+                    
+                    // 验证借出日期
+                    const borrowDate = document.getElementById('borrow-date').value;
+                    const borrowDateError = validateInput(borrowDate, 'date', { required: true, notFuture: true });
+                    if (borrowDateError) {
+                        showError('borrow-date', borrowDateError);
+                        isValid = false;
+                    }
+                    
+                    // 验证预期归还日期
+                    const expectedReturn = document.getElementById('borrow-expected-return').value;
+                    if (expectedReturn) {
+                        const returnDateError = validateInput(expectedReturn, 'date');
+                        if (returnDateError) {
+                            showError('borrow-expected-return', returnDateError);
+                            isValid = false;
+                        } else {
+                            // 检查归还日期不能早于借出日期
+                            const borrowDateObj = new Date(borrowDate);
+                            const returnDateObj = new Date(expectedReturn);
+                            if (returnDateObj < borrowDateObj) {
+                                showError('borrow-expected-return', '预期归还日期不能早于借出日期');
+                                isValid = false;
+                            }
+                        }
+                    }
+                    
+                    // 验证借出用途
+                    const purpose = document.getElementById('borrow-purpose').value;
+                    const purposeError = validateInput(purpose, 'text', { required: true, maxLength: 100 });
+                    if (purposeError) {
+                        showError('borrow-purpose', purposeError);
+                        isValid = false;
+                    }
+                    
+                    if (isValid) {
+                        await executeBorrowLogic();
+                    }
+                });
+            }
+        }
+
+        // 增强归还表单验证
+        function enhanceReturnFormValidation() {
+            const returnForm = document.getElementById('return-form');
+            if (returnForm) {
+                returnForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    clearFormErrors(this);
+                    let isValid = true;
+                    
+                    // 验证归还记录选择
+                    const borrowId = document.getElementById('return-record').value;
+                    if (!borrowId) {
+                        showError('return-record', '请选择要归还的借出记录');
+                        isValid = false;
+                    }
+                    
+                    // 验证归还数量
+                    const quantity = document.getElementById('return-quantity').value;
+                    const quantityError = validateInput(quantity, 'integer', { min: 1, required: true });
+                    if (quantityError) {
+                        showError('return-quantity', quantityError);
+                        isValid = false;
+                    }
+                    
+                    // 验证归还日期
+                    const returnDate = document.getElementById('return-date').value;
+                    const dateError = validateInput(returnDate, 'date', { required: true, notFuture: true });
+                    if (dateError) {
+                        showError('return-date', dateError);
+                        isValid = false;
+                    }
+                    
+                    // 验证物资状态
+                    const condition = document.getElementById('return-condition').value;
+                    if (!condition) {
+                        showError('return-condition', '请选择物资状态');
+                        isValid = false;
+                    }
+                    
+                    // 验证归还人
+                    const person = document.getElementById('return-person').value;
+                    const personError = validateInput(person, 'text', { required: true, maxLength: 20 });
+                    if (personError) {
+                        showError('return-person', personError);
+                        isValid = false;
+                    }
+                    
+                    if (isValid) {
+                        await executeReturnLogic();
+                    }
+                });
+            }
+        }
+
+        // 增强出库表单验证
+        function enhanceOutboundFormValidation() {
+            const outboundForm = document.getElementById('outbound-form');
+            if (outboundForm) {
+                outboundForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    // 清除所有错误
+                    clearFormErrors(this);
+                    
+                    let isValid = true;
+                    
+                    // 验证物资名称
+                    const itemName = document.getElementById('outbound-name').value;
+                    if (!itemName) {
+                        showError('outbound-name', '请选择要出库的物资');
+                        isValid = false;
+                    }
+                    
+                    // 验证出库数量
+                    const quantity = document.getElementById('outbound-quantity').value;
+                    const quantityError = validateInput(quantity, 'integer', { min: 1, max: 999999, required: true });
+                    if (quantityError) {
+                        showError('outbound-quantity', quantityError);
+                        isValid = false;
+                    }
+                    
+                    // 验证接收人
+                    const recipient = document.getElementById('outbound-recipient').value;
+                    const recipientError = validateInput(recipient, 'text', { required: true, maxLength: 50 });
+                    if (recipientError) {
+                        showError('outbound-recipient', recipientError);
+                        isValid = false;
+                    }
+                    
+                    // 验证用途
+                    const purpose = document.getElementById('outbound-purpose').value;
+                    const purposeError = validateInput(purpose, 'text', { required: true, maxLength: 100 });
+                    if (purposeError) {
+                        showError('outbound-purpose', purposeError);
+                        isValid = false;
+                    }
+                    
+                    // 验证日期
+                    const date = document.getElementById('outbound-date').value;
+                    const dateError = validateInput(date, 'date', { required: true, notFuture: true });
+                    if (dateError) {
+                        showError('outbound-date', dateError);
+                        isValid = false;
+                    }
+                    
+                    // 验证操作员
+                    const operator = document.getElementById('outbound-operator').value;
+                    const operatorError = validateInput(operator, 'text', { required: true, maxLength: 20 });
+                    if (operatorError) {
+                        showError('outbound-operator', operatorError);
+                        isValid = false;
+                    }
+                    
+                    if (isValid) {
+                        // 执行原有的出库逻辑
+                        await executeOutboundLogic();
+                    }
+                });
+            }
+        }
+
+        // 增强借出表单验证
+        function enhanceBorrowFormValidation() {
+            const borrowForm = document.getElementById('borrow-form');
+            if (borrowForm) {
+                borrowForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    clearFormErrors(this);
+                    let isValid = true;
+                    
+                    // 验证借出数量
+                    const quantity = document.getElementById('borrow-quantity').value;
+                    const quantityError = validateInput(quantity, 'integer', { min: 1, max: 999999, required: true });
+                    if (quantityError) {
+                        showError('borrow-quantity', quantityError);
+                        isValid = false;
+                    }
+                    
+                    // 验证借出人
+                    const person = document.getElementById('borrow-person').value;
+                    const personError = validateInput(person, 'text', { required: true, maxLength: 20 });
+                    if (personError) {
+                        showError('borrow-person', personError);
+                        isValid = false;
+                    }
+                    
+                    // 验证联系方式（如果填写）
+                    const contact = document.getElementById('borrow-contact').value;
+                    if (contact) {
+                        const contactError = validateInput(contact, 'phone');
+                        if (contactError) {
+                            showError('borrow-contact', contactError);
+                            isValid = false;
+                        }
+                    }
+                    
+                    // 验证借出日期
+                    const borrowDate = document.getElementById('borrow-date').value;
+                    const borrowDateError = validateInput(borrowDate, 'date', { required: true, notFuture: true });
+                    if (borrowDateError) {
+                        showError('borrow-date', borrowDateError);
+                        isValid = false;
+                    }
+                    
+                    // 验证预期归还日期
+                    const expectedReturn = document.getElementById('borrow-expected-return').value;
+                    if (expectedReturn) {
+                        const returnDateError = validateInput(expectedReturn, 'date');
+                        if (returnDateError) {
+                            showError('borrow-expected-return', returnDateError);
+                            isValid = false;
+                        } else {
+                            // 检查归还日期不能早于借出日期
+                            const borrowDateObj = new Date(borrowDate);
+                            const returnDateObj = new Date(expectedReturn);
+                            if (returnDateObj < borrowDateObj) {
+                                showError('borrow-expected-return', '预期归还日期不能早于借出日期');
+                                isValid = false;
+                            }
+                        }
+                    }
+                    
+                    // 验证借出用途
+                    const purpose = document.getElementById('borrow-purpose').value;
+                    const purposeError = validateInput(purpose, 'text', { required: true, maxLength: 100 });
+                    if (purposeError) {
+                        showError('borrow-purpose', purposeError);
+                        isValid = false;
+                    }
+                    
+                    if (isValid) {
+                        await executeBorrowLogic();
+                    }
+                });
+            }
+        }
+
+        // 增强归还表单验证
+        function enhanceReturnFormValidation() {
+            const returnForm = document.getElementById('return-form');
+            if (returnForm) {
+                returnForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    clearFormErrors(this);
+                    let isValid = true;
+                    
+                    // 验证归还记录选择
+                    const borrowId = document.getElementById('return-record').value;
+                    if (!borrowId) {
+                        showError('return-record', '请选择要归还的借出记录');
+                        isValid = false;
+                    }
+                    
+                    // 验证归还数量
+                    const quantity = document.getElementById('return-quantity').value;
+                    const quantityError = validateInput(quantity, 'integer', { min: 1, required: true });
+                    if (quantityError) {
+                        showError('return-quantity', quantityError);
+                        isValid = false;
+                    }
+                    
+                    // 验证归还日期
+                    const returnDate = document.getElementById('return-date').value;
+                    const dateError = validateInput(returnDate, 'date', { required: true, notFuture: true });
+                    if (dateError) {
+                        showError('return-date', dateError);
+                        isValid = false;
+                    }
+                    
+                    // 验证物资状态
+                    const condition = document.getElementById('return-condition').value;
+                    if (!condition) {
+                        showError('return-condition', '请选择物资状态');
+                        isValid = false;
+                    }
+                    
+                    // 验证归还人
+                    const person = document.getElementById('return-person').value;
+                    const personError = validateInput(person, 'text', { required: true, maxLength: 20 });
+                    if (personError) {
+                        showError('return-person', personError);
+                        isValid = false;
+                    }
+                    
+                    if (isValid) {
+                        await executeReturnLogic();
+                    }
+                });
+            }
+        }
+        
+        // 显示表单错误
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            if (!field) return;
+            
+            field.classList.add('error');
+            
+            // 检查是否已存在错误消息元素
+            let errorDiv = field.nextElementSibling;
+            if (!errorDiv || !errorDiv.classList.contains('error-message')) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                field.parentNode.insertBefore(errorDiv, field.nextSibling);
+            }
+            
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+        
+        // 清除表单错误
+        function clearFormErrors(form) {
+            form.querySelectorAll('.error').forEach(field => {
+                field.classList.remove('error');
+            });
+            
+            form.querySelectorAll('.error-message').forEach(msg => {
+                msg.style.display = 'none';
+            });
+        }
+        
+        // 检查物资名称是否重复
+        async function isItemNameDuplicate(name) {
+            try {
+                const items = await StorageAPI.getData('emergencyItems');
+                return items.some(item => item.name === name);
+            } catch (err) {
+                console.error('检查物资名称重复失败:', err);
+                return false; // 出错时假设不重复
+            }
+        }
+        
+        // 初次加载页面时初始化应用
+        async function initializeApp() {
+            try {
+                // 等待数据库就绪
+                await new Promise(resolve => {
+                    StorageAPI.db.onReady(resolve);
+                });
+                
+                // 初始化所有表单验证
+                enhanceFormValidation();
+                enhanceOutboundFormValidation();
+                enhanceBorrowFormValidation();
+                enhanceReturnFormValidation();
+                
+                // 加载库存数据
+                await loadInventory();
+                
+                // 检查自动备份
+                await setupAutoBackup();
+                
+                // 如果在数据管理标签页，加载备份列表
+                if (document.querySelector('.tab[data-tab="datamgmt"]').classList.contains('active')) {
+                    await loadBackupsList();
+                }
+                
+                console.log('应用初始化完成，使用IndexedDB存储');
+                
+            } catch (err) {
+                console.error('应用初始化过程中发生错误:', err);
+                // 尝试使用localStorage作为备选方案
+                StorageAPI.isCompatMode = true;
+                console.log('已切换到兼容模式，使用localStorage存储');
+                throw err; // 重新抛出错误以便上层处理
+            }
+        }
+        
+        // 页面加载时初始化应用
+        window.addEventListener('load', function() {
+            initializeApp().catch(err => {
+                console.error('应用初始化错误:', err);
+                alert('数据库初始化失败，将使用localStorage作为备选存储方式。');
+            });
+        });
+        
+        // 添加全局错误处理
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('未处理的Promise拒绝:', event.reason);
+            // 可以选择显示用户友好的错误信息
+            // alert('系统出现错误，请刷新页面重试');
+            event.preventDefault(); // 阻止默认的错误处理
+        });
+        
+        window.addEventListener('error', function(event) {
+            console.error('全局错误:', event.error);
+            // 可以选择显示用户友好的错误信息
+        });
+        
+        // 当切换到数据管理标签页时，加载备份列表
+        document.querySelector('.tab[data-tab="datamgmt"]').addEventListener('click', function() {
+            try {
+                loadBackupsList();
+            } catch (err) {
+                console.error('加载备份列表失败:', err);
+            }
+        });
+        
+        // 显示编辑模态框
+        async function showEditModal(itemId) {
+            try {
+                const items = await StorageAPI.getData('emergencyItems');
+                const item = items.find(i => i.id === itemId);
+                
+                if (!item) {
+                    alert('未找到该物资记录！');
+                    return;
+                }
+                
+                // 填充表单数据
+                document.getElementById('edit-item-id').value = item.id;
+                document.getElementById('edit-item-name').value = item.name;
+                document.getElementById('edit-item-category').value = item.category;
+                document.getElementById('edit-item-quantity').value = item.quantity;
+                document.getElementById('edit-item-unit').value = item.unit;
+                document.getElementById('edit-item-spec').value = item.spec || '';
+                document.getElementById('edit-item-price').value = item.price;
+                document.getElementById('edit-item-source').value = item.source;
+                document.getElementById('edit-item-date').value = item.date;
+                document.getElementById('edit-item-operator').value = item.operator;
+                document.getElementById('edit-item-usage').value = item.usage || '';
+                document.getElementById('edit-item-notes').value = item.notes || '';
+                
+                // 显示模态框
+                document.getElementById('edit-modal').style.display = 'block';
+                
+            } catch (err) {
+                console.error('显示编辑模态框失败:', err);
+                alert('打开编辑窗口失败，请重试');
+            }
+        }
+        
+        // 编辑表单提交
+        document.getElementById('edit-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('edit-save-btn');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                // 禁用提交按钮防止重复提交
+                submitBtn.disabled = true;
+                submitBtn.textContent = '保存中...';
+                
+                // 清除所有错误
+                clearFormErrors(this);
+                
+                // 获取表单数据
+                const itemId = document.getElementById('edit-item-id').value;
+                const itemName = document.getElementById('edit-item-name').value.trim();
+                const quantity = parseInt(document.getElementById('edit-item-quantity').value);
+                const price = document.getElementById('edit-item-price').value;
+                let finalPrice = 0;
+                
+                if (price !== '') {
+                    finalPrice = parseFloat(price);
+                    if (isNaN(finalPrice) || finalPrice < 0) {
+                        showError('edit-item-price', '价格不能为负数');
+                        return;
+                    }
+                }
+                
+                // 检查物资名称唯一性（排除当前编辑的物资）
+                const items = await StorageAPI.getData('emergencyItems');
+                const isDuplicate = items.some(item => 
+                    item.name === itemName && item.id !== itemId
+                );
+                
+                if (isDuplicate) {
+                    showError('edit-item-name', '物资名称已存在，请使用不同名称');
+                    return;
+                }
+                
+                // 更新物资信息
+                const updatedItem = {
+                    id: itemId,
+                    name: itemName,
+                    category: document.getElementById('edit-item-category').value,
+                    quantity: quantity,
+                    unit: document.getElementById('edit-item-unit').value,
+                    spec: document.getElementById('edit-item-spec').value,
+                    price: finalPrice,
+                    source: document.getElementById('edit-item-source').value,
+                    date: document.getElementById('edit-item-date').value,
+                    operator: document.getElementById('edit-item-operator').value,
+                    usage: document.getElementById('edit-item-usage').value,
+                    notes: document.getElementById('edit-item-notes').value
+                };
+                
+                // 计算总价值
+                updatedItem.totalValue = updatedItem.quantity * updatedItem.price;
+                
+                console.log('正在更新物资:', updatedItem);
+                const success = await StorageAPI.updateItem('emergencyItems', updatedItem);
+                
+                if (success) {
+                    // 记录操作日志
+                    logOperation('物资信息修改', { itemName: updatedItem.name, itemId: itemId });
+                    alert('物资信息更新成功！');
+                    document.getElementById('edit-modal').style.display = 'none';
+                    await loadInventory(); // 确保等待库存重新加载完成
+                } else {
+                    throw new Error('更新失败');
+                }
+            } catch (err) {
+                console.error('更新物资信息失败:', err);
+                alert('更新失败，请重试');
+            } finally {
+                // 恢复提交按钮状态
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+        
+        // 编辑模态框关闭事件已在上方统一处理
+    </script>
+</body>
+</html>
