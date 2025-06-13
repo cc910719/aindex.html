@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据迁移工具 - 物资库管理系统</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .step {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        
+        .step h3 {
+            color: #007AFF;
+            margin-top: 0;
+        }
+        
+        .file-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        
+        .file-input:hover {
+            border-color: #007AFF;
+            background-color: #f0f8ff;
+        }
+        
+        button {
+            background-color: #007AFF;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        
+        button:hover {
+            background-color: #0056CC;
+        }
+        
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .result.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .result.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .progress {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: #007AFF;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status.online {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status.offline {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚚 数据迁移工具</h1>
+        
+        <div class="step">
+            <h3>📡 连接状态检查</h3>
+            <p>检查与Vercel数据库的连接状态：</p>
+            <button onclick="checkConnection()">检查连接</button>
+            <div id="connectionStatus" class="status" style="display: none;"></div>
+        </div>
+
+        <div class="step">
+            <h3>📁 步骤1: 选择备份文件</h3>
+            <p>请选择您的JSON备份文件（例如：物资库数据备份_2025-06-13.json）：</p>
+            <input type="file" id="backupFile" accept=".json" onchange="loadBackupFile(event)">
+            <div class="file-input" onclick="document.getElementById('backupFile').click()">
+                点击选择JSON备份文件
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>📊 步骤2: 预览数据</h3>
+            <p>文件加载后，您可以预览将要导入的数据：</p>
+            <div id="dataPreview"></div>
+        </div>
+
+        <div class="step">
+            <h3>🚀 步骤3: 执行迁移</h3>
+            <p>确认数据无误后，点击开始迁移：</p>
+            <button id="migrateBtn" onclick="startMigration()" disabled>开始数据迁移</button>
+            <div class="progress" id="progressBar">
+                <div class="progress-bar" id="progressFill"></div>
+            </div>
+            <div id="migrationResult" class="result"></div>
+        </div>
+
+        <div class="step">
+            <h3>📋 使用说明</h3>
+            <ul>
+                <li><strong>支持的文件格式：</strong>JSON格式的备份文件</li>
+                <li><strong>数据类型：</strong>物资信息、出库记录、归还记录、借用记录</li>
+                <li><strong>安全性：</strong>所有数据都会进行验证和清理</li>
+                <li><strong>备份：</strong>建议在迁移前做好现有数据的备份</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let backupData = null;
+
+        /**
+         * 检查API连接状态
+         */
+        async function checkConnection() {
+            const statusEl = document.getElementById('connectionStatus');
+            statusEl.style.display = 'block';
+            statusEl.textContent = '正在检查连接...';
+            statusEl.className = 'status';
+
+            try {
+                const response = await fetch('/api/items?action=list');
+                if (response.ok) {
+                    statusEl.textContent = '✅ 连接正常 - 可以进行数据迁移';
+                    statusEl.className = 'status online';
+                } else {
+                    throw new Error('连接失败');
+                }
+            } catch (error) {
+                statusEl.textContent = '❌ 连接失败 - 请检查部署状态';
+                statusEl.className = 'status offline';
+            }
+        }
+
+        /**
+         * 加载备份文件
+         */
+        function loadBackupFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.name.endsWith('.json')) {
+                alert('请选择JSON格式的文件');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    backupData = JSON.parse(e.target.result);
+                    displayDataPreview(backupData);
+                    document.getElementById('migrateBtn').disabled = false;
+                } catch (error) {
+                    alert('JSON文件格式错误: ' + error.message);
+                    backupData = null;
+                    document.getElementById('migrateBtn').disabled = true;
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        /**
+         * 显示数据预览
+         */
+        function displayDataPreview(data) {
+            const preview = document.getElementById('dataPreview');
+            
+            const stats = {
+                物资数量: (data.emergencyItems || []).length,
+                出库记录: (data.outboundRecords || []).length,
+                归还记录: (data.returnRecords || []).length,
+                借用记录: (data.borrowRecords || []).length
+            };
+
+            let html = '<h4>数据统计预览：</h4><ul>';
+            for (const [key, value] of Object.entries(stats)) {
+                html += `<li><strong>${key}:</strong> ${value} 条</li>`;
+            }
+            html += '</ul>';
+
+            // 显示部分物资数据示例
+            if (data.emergencyItems && data.emergencyItems.length > 0) {
+                html += '<h4>物资数据示例：</h4>';
+                html += '<pre>' + JSON.stringify(data.emergencyItems.slice(0, 3), null, 2) + '</pre>';
+            }
+
+            preview.innerHTML = html;
+        }
+
+        /**
+         * 开始数据迁移
+         */
+        async function startMigration() {
+            if (!backupData) {
+                alert('请先选择备份文件');
+                return;
+            }
+
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+            const resultDiv = document.getElementById('migrationResult');
+            const migrateBtn = document.getElementById('migrateBtn');
+
+            // 显示进度条
+            progressBar.style.display = 'block';
+            progressFill.style.width = '0%';
+            resultDiv.style.display = 'none';
+            migrateBtn.disabled = true;
+
+            try {
+                // 模拟进度更新
+                progressFill.style.width = '20%';
+                
+                const response = await fetch('/api/migrate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(backupData)
+                });
+
+                progressFill.style.width = '80%';
+
+                const result = await response.json();
+                
+                progressFill.style.width = '100%';
+
+                // 显示结果
+                setTimeout(() => {
+                    progressBar.style.display = 'none';
+                    resultDiv.style.display = 'block';
+                    
+                    if (result.success) {
+                        resultDiv.className = 'result success';
+                        resultDiv.innerHTML = `
+                            <h4>✅ 数据迁移成功！</h4>
+                            <p><strong>导入统计：</strong></p>
+                            <ul>
+                                <li>物资数据: ${result.imported.emergencyItems} 条</li>
+                                <li>出库记录: ${result.imported.outboundRecords} 条</li>
+                                <li>归还记录: ${result.imported.returnRecords} 条</li>
+                                <li>借用记录: ${result.imported.borrowRecords} 条</li>
+                            </ul>
+                            <p>您现在可以访问主系统查看迁移后的数据。</p>
+                        `;
+                    } else {
+                        resultDiv.className = 'result error';
+                        resultDiv.innerHTML = `
+                            <h4>❌ 数据迁移失败</h4>
+                            <p><strong>错误信息：</strong> ${result.message}</p>
+                            ${result.errors ? '<p><strong>详细错误：</strong><br>' + result.errors.join('<br>') + '</p>' : ''}
+                        `;
+                    }
+                }, 500);
+
+            } catch (error) {
+                progressBar.style.display = 'none';
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <h4>❌ 迁移过程中发生错误</h4>
+                    <p><strong>错误信息：</strong> ${error.message}</p>
+                    <p>请检查网络连接和服务器状态，然后重试。</p>
+                `;
+            } finally {
+                migrateBtn.disabled = false;
+            }
+        }
+
+        // 页面加载时自动检查连接
+        window.addEventListener('load', checkConnection);
+    </script>
+</body>
+</html> 

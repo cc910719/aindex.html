@@ -1,0 +1,16 @@
+{
+  "name": "emergency-supplies-management",
+  "version": "1.0.0",
+  "description": "秦汉新城应急物资库管理系统",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -s . -l 3000",
+    "build": "echo 'No build needed for static site'"
+  },
+  "dependencies": {
+    "@vercel/kv": "^1.0.0"
+  },
+  "devDependencies": {
+    "serve": "^14.0.0"
+  }
+} 
